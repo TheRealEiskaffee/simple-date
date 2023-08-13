@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist",         // Ausgabeordner für kompilierte Dateien
+        "rootDir": "./src",         // Quellordner mit TypeScript-Dateien
+        "module": "CommonJS",       // Modulformat
+        "target": "ES6",            // Zielsprachversion
+        "declaration": true,       // Generiere .d.ts-Typendeklarationen
+        "strict": true,             // Aktiviere strenge Typenüberprüfung
+        "declarationDir": "dist/types",
+    },
+}
+  
