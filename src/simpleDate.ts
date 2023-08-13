@@ -317,4 +317,4 @@ export default class SimpleDate {
     }
 }
 
-console.log(new Date('20255-03-05'))
+console.log(new Date('20255-03-05'), new Date())
