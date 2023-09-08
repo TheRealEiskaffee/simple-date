@@ -1,15 +1,19 @@
 {
-  "name": "simple-date",
+  "name": "simple-date-operation",
   "version": "1.0.0",
   "description": "This is a simple native date operation/convert tool.",
-  "main": "dist/simpleDate.js",
-  "type": "commonjs",
+  "main": "lib/index.js",
+  "types": "lib/types/index.d.ts",
   "scripts": {
     "test": "npx jest",
     "test:w": "npx jest --watch",
-    "dev": "npx ts-node-dev --respawn src/simpleDate.ts",
+    "dev": "npx ts-node-dev --respawn src/index.ts",
     "build": "npx tsc"
   },
+  "keywords": [
+    "simple-date",
+    "date"
+  ],
   "author": "David Koch",
   "license": "ISC",
   "devDependencies": {
