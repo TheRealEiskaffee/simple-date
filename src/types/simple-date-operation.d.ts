@@ -1,16 +1,5 @@
 declare module 'simple-date-operation' {
     export namespace NSimpleDate {
-        // type diffUnit = 'days' | 'day' | 'years' | 'year' | 'month' | 'months' | 'second' | 'seconds';
-    
-    
-    
-        // type TSameUnit = 'year' | 'years' | 'month' | 'months' | 'day' | 'days' | 'hour' | 'hours' | 'minute' | 'minutes' | 'second' | 'seconds' | 'date'
-        // type TAfterUnit = 'year' | 'years' | 'month' | 'months' | 'day' | 'days' | 'hour' | 'hours' | 'minute' | 'minutes' | 'second' | 'seconds' | 'date'
-        // type TBeforeUnit = 'year' | 'years' | 'month' | 'months' | 'day' | 'days' | 'hour' | 'hours' | 'minute' | 'minutes' | 'second' | 'seconds' | 'date'
-        // type TypeA = 'year'
-        // type TypeB = 'month'
-    
-        // type TypeC = TypeA & TypeB
         interface ISettings {
             offset ?: number
         }

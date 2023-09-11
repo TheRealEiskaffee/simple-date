@@ -1,4 +1,4 @@
-import SimpleDate from "../";
+import SimpleDate from '../src/index';
 
 const date1 = new SimpleDate(new Date('2022-03-05')),
       date2 = new SimpleDate(new Date('20255-03-05')),

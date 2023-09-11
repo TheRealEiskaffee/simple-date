@@ -1,6 +1,6 @@
 {
   "name": "simple-date-operation",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "description": "This is a simple native date operation/convert tool.",
   "main": "lib/index.js",
   "types": "lib/types/index.d.ts",
@@ -12,7 +12,10 @@
   },
   "keywords": [
     "simple-date",
-    "date"
+    "date",
+    "native",
+    "operations",
+    "easy"
   ],
   "author": "David Koch",
   "license": "ISC",

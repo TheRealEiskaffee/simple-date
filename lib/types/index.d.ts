@@ -1,4 +1,16 @@
-import { NSimpleDate, diffUnit, unitEndOf, unitIsAfter, unitIsBefore, unitIsBetween, unitIsSame, unitOperation, unitStartOf } from './typings';
+declare namespace NSimpleDate {
+    interface ISettings {
+        offset?: number;
+    }
+}
+type diffUnit = 'days' | 'day' | 'years' | 'year' | 'month' | 'months' | 'second' | 'seconds';
+type unitStartOf = 'year' | 'day' | 'month' | 'week';
+type unitEndOf = 'year' | 'day' | 'month' | 'week';
+type unitIsSame = 'year' | 'day' | 'month' | 'week' | 'date';
+type unitIsAfter = 'year' | 'date' | 'month' | 'time';
+type unitIsBefore = 'year' | 'date' | 'month' | 'time';
+type unitIsBetween = 'year' | 'date' | 'month' | 'time';
+type unitOperation = 'years' | 'year' | 'months' | 'month' | 'days' | 'day' | 'hours' | 'hour' | 'minutes' | 'minute' | 'seconds' | 'second' | 'milliseconds' | 'millisecond';
 declare class SimpleDate {
     private date;
     private settings;

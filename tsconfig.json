@@ -6,8 +6,9 @@
         "target": "ES6",           // Zielsprachversion
         "declaration": true,       // Generiere .d.ts-Typendeklarationen
         "strict": true,            // Aktiviere strenge Typenüberprüfung
-        "declarationDir": "./lib/typings",
+        "declarationDir": "./lib/types",
         "strictNullChecks" : false,
+        "esModuleInterop": true
     },
     "include": ["src/**/*.ts"],
     "exclude": ["node_modules", ".history"]
