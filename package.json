@@ -12,10 +12,14 @@
   },
   "keywords": [
     "simple-date",
+    "simple",
     "date",
     "native",
     "operations",
-    "easy"
+    "easy",
+    "format",
+    "time",
+    "immutable"
   ],
   "author": "David Koch",
   "license": "ISC",
