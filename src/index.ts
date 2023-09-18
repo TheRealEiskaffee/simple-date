@@ -429,6 +429,19 @@ class SimpleDate {
         return response
     }
 
+    /**
+     * you can create your own format. This is the available formats in a string.
+     * YYYY (2023),
+     * MM (05)
+     * DD (15)
+     * HH (23)
+     * mm (14)
+     * ss (42)
+     * dddd (Saturday)
+     * dd (Sa)
+     * @param format 
+     * @returns 
+     */
     public format(format ?: string) {
         let response : string = this.date instanceof Date && !isNaN(this.date.getTime()) ? this.date.toISOString().substring(0, 10) : undefined,
             date = new Date(this.date);
@@ -441,16 +454,19 @@ class SimpleDate {
                   day = date.toISOString().substring(8, 10), //DD
                   hours = date.toISOString().substring(11, 13), //HH
                   minutes = date.toISOString().substring(14, 16), //mm
-                  seconds = date.toISOString().substring(17, 19); //ss
+                  seconds = date.toISOString().substring(17, 19), //ss
+                  dddd = date.toLocaleString("default", {weekday: 'long'}), //dddd named weekday
+                  dd = date.toLocaleString("default", {weekday: 'short'}); //dd named weekday as short
 
             response = format;
-            response = response.replace('YYYY', year)
             response = response.replace('YYYY', year);
             response = response.replace('MM', month);
             response = response.replace('DD', day);
             response = response.replace('HH', hours);
             response = response.replace('mm', minutes);
             response = response.replace('ss', seconds);
+            response = response.replace('dddd', dddd);
+            response = response.replace('dd', dd);
         }
         
         return response

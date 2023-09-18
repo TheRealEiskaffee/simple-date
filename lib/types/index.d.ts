@@ -30,6 +30,19 @@ declare class SimpleDate {
     isBefore(date: Date, unit?: unitIsBefore): boolean;
     isSameOrBefore(date: Date, unit?: unitIsBefore): boolean;
     isBetween(from: Date, to: Date, unit?: unitIsBetween, equal?: boolean): boolean;
+    /**
+     * you can create your own format. This is the available formats in a string.
+     * YYYY (2023),
+     * MM (05)
+     * DD (15)
+     * HH (23)
+     * mm (14)
+     * ss (42)
+     * dddd (Saturday)
+     * dd (Sa)
+     * @param format
+     * @returns
+     */
     format(format?: string): string;
     add(value: number, type: unitOperation): SimpleDate;
     subtract(value: number, type: unitOperation): SimpleDate;
