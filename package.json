@@ -10,12 +10,20 @@
     "dev": "npx ts-node-dev --respawn src/index.ts",
     "build": "npx tsc"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TheRealEiskaffee/simple-date.git"
+  },
   "keywords": [
     "simple-date",
+    "simple",
     "date",
     "native",
     "operations",
-    "easy"
+    "easy",
+    "format",
+    "time",
+    "immutable"
   ],
   "author": "David Koch",
   "license": "ISC",
