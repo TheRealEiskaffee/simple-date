@@ -149,7 +149,6 @@ class SimpleDate {
             
             case 'year':
                 newDate.setHours(23, 59, 59, 999);
-                // newDate.setDate(new Date(newDate.getFullYear(), newDate.getMonth() + 1, 1).getDate());
                 newDate.setDate(0);
                 newDate.setMonth(11);
             
@@ -164,14 +163,10 @@ class SimpleDate {
             break;
 
             case 'week':
-                // //TODO ist noch buggy
-                // let startDate = new Date(newDate.setDate(newDate.getDate() - newDate.getDay() === 0 ? 0 : newDate.getDay() - 1)),
-                //     endDate = new Date(startDate);
+                let endDate = new Date(newDate.setDate(newDate.getDay() < 7 ? newDate.getDate() + (7-newDate.getDay()) : newDate.getDate()));
+                endDate.setHours(23, 59, 59, 999);
 
-                // endDate.setDate(startDate.getDate() + 6);
-                // endDate.setHours(23, 59, 59, 999);
-
-                // result = endDate;
+                result = endDate;
             break;
         }
 
