@@ -434,6 +434,8 @@ class SimpleDate {
      * ss (42)
      * dddd (Saturday)
      * dd (Sa)
+     * MMMM (January)
+     * MMM (Jan)
      * @param format 
      * @returns 
      */
@@ -450,19 +452,22 @@ class SimpleDate {
                   hours = date.toISOString().substring(11, 13), //HH
                   minutes = date.toISOString().substring(14, 16), //mm
                   seconds = date.toISOString().substring(17, 19), //ss
-                  dddd = date.toLocaleString("default", {weekday: 'long'}), //dddd named weekday
-                  dd = date.toLocaleString("default", {weekday: 'short'}); //dd named weekday as short
+                  longWeekday = date.toLocaleString("default", {weekday: 'long'}), //dddd named weekday
+                  shortWeekday = date.toLocaleString("default", {weekday: 'short'}), //dd named weekday as short
+                  longMonth = date.toLocaleString("default", {month: 'short'}), //dd named month
+                  shortMonth = date.toLocaleString("default", {month: 'long'}); //dddd named month as short
 
             response = format;
-            response = response.replace('YYYY', year)
-            response = response.replace('YYYY', year);
-            response = response.replace('MM', month);
-            response = response.replace('DD', day);
-            response = response.replace('HH', hours);
-            response = response.replace('mm', minutes);
-            response = response.replace('ss', seconds);
-            response = response.replace('dddd', dddd);
-            response = response.replace('dd', dd);
+            response = response.replace(/\bYYYY\b/g, year)
+            response = response.replace(/\bMM\b/g, month);
+            response = response.replace(/\bDD\b/g, day);
+            response = response.replace(/\bHH\b/g, hours);
+            response = response.replace(/\bmm\b/g, minutes);
+            response = response.replace(/\bss\b/g, seconds);
+            response = response.replace(/\bdddd\b/g, longWeekday);
+            response = response.replace(/\bdd\b/g, shortWeekday);
+            response = response.replace(/\bMMMM\b/g, longMonth);
+            response = response.replace(/\bMMM\b/g, shortMonth);
         } else {
             if(this.date instanceof Date && !isNaN(this.date.getTime())) {
                 response = date.toISOString().substring(0, 10);
