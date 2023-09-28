@@ -13,4 +13,5 @@ declare module 'simple-date-operation' {
     type unitIsBefore = 'year' | 'date' | 'month' | 'time';
     type unitIsBetween = 'year' | 'date' | 'month' | 'time';
     type unitOperation = 'years' | 'year' | 'months' | 'month' | 'days' | 'day' | 'hours' | 'hour' | 'minutes' | 'minute' | 'seconds' | 'second' | 'milliseconds' | 'millisecond';
+    type adoptUnit = 'year' | 'month' | 'date' | 'hours' | 'hour' | 'minutes' | 'minute' | 'seconds' | 'second' | 'milliseconds' | 'millisecond'
 }

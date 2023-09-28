@@ -1,3 +1,4 @@
+import { adoptUnit } from "simple-date-operation";
 declare namespace NSimpleDate {
     interface ISettings {
         offset?: number;
@@ -40,6 +41,8 @@ declare class SimpleDate {
      * ss (42)
      * dddd (Saturday)
      * dd (Sa)
+     * MMMM (January)
+     * MMM (Jan)
      * @param format
      * @returns
      */
@@ -47,5 +50,12 @@ declare class SimpleDate {
     add(value: number, type: unitOperation): SimpleDate;
     subtract(value: number, type: unitOperation): SimpleDate;
     cronExpression(): string;
+    /**
+     * with this function you can adopt the data (wich you want) like ['hours', 'minutes', 'year' '...'] of the passed date into the first date
+     * @param from
+     * @param values
+     * @returns
+     */
+    adopt(from: Date, values?: adoptUnit[]): SimpleDate;
 }
 export = SimpleDate;

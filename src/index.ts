@@ -1,3 +1,5 @@
+import { adoptUnit } from "simple-date-operation";
+
 declare namespace NSimpleDate {
     interface ISettings {
         offset ?: number
@@ -572,6 +574,54 @@ class SimpleDate {
         }
 
         return result;
+    }
+
+    /**
+     * with this function you can adopt the data (wich you want) like ['hours', 'minutes', 'year' '...'] of the passed date into the first date
+     * @param from 
+     * @param values 
+     * @returns 
+     */
+    public adopt(from: Date, values ?: adoptUnit[]) : SimpleDate {
+        const fromDate = new Date(from);
+
+        if(from) {
+            if(values?.length) {
+                values.forEach((value) => {
+                    switch (value) {
+                        case 'year':
+                            this.date.setFullYear(fromDate.getFullYear());
+                            break;
+                        case 'month':
+                            this.date.setMonth(fromDate.getMonth());
+                            break;
+                        case 'date':
+                            this.date.setDate(fromDate.getDate());
+                            break;
+                        case 'hours':
+                        case 'hour':
+                            this.date.setHours(fromDate.getHours());
+                            break;
+                        case 'minutes':
+                        case 'minute':
+                            
+                            this.date.setMinutes(fromDate.getMinutes());
+                            break;
+                        case 'seconds':
+                        case 'second':
+                            this.date.setSeconds(fromDate.getSeconds());
+                            
+                            break;
+                        case 'milliseconds':
+                        case 'millisecond':
+                            this.date.setMilliseconds(fromDate.getMilliseconds());
+                            break;
+                    }
+                });
+            }
+        }
+
+        return new SimpleDate(this.date);
     }
 }
 
