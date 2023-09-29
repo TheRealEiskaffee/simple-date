@@ -13,6 +13,7 @@ type unitIsBefore = 'year' | 'date' | 'month' | 'time';
 type unitIsBetween = 'year' | 'date' | 'month' | 'time';
 type unitOperation = 'years' | 'year' | 'months' | 'month' | 'days' | 'day' | 'hours' | 'hour' | 'minutes' | 'minute' | 'seconds' | 'second' | 'milliseconds' | 'millisecond';
 type adoptUnit = 'year' | 'month' | 'date' | 'hours' | 'hour' | 'minutes' | 'minute' | 'seconds' | 'second' | 'milliseconds' | 'millisecond'
+type isWithinUnit = 'year' | 'day' | 'month' | 'week' | 'date';
 
 class SimpleDate {
     private date : Date = undefined;
@@ -241,7 +242,11 @@ class SimpleDate {
     
     public isAfter(date : Date, unit ?: unitIsAfter) {
         let response : boolean = false;
-        
+
+        if(!(date instanceof Date && !isNaN(date.getTime()))) {
+            date = new Date(date);
+        }
+
         switch (unit) {
             case 'date':
                 //YYYY-MM-DD
@@ -276,6 +281,10 @@ class SimpleDate {
     public isSameOrAfter(date : Date, unit ?: unitIsAfter) {
         let response : boolean = false;
         
+        if(!(date instanceof Date && !isNaN(date.getTime()))) {
+            date = new Date(date);
+        }
+
         if(date) {
             switch (unit) {
                 case 'date':
@@ -312,6 +321,10 @@ class SimpleDate {
     public isBefore(date : Date, unit ?: unitIsBefore) {
         let response : boolean = false;
         
+        if(!(date instanceof Date && !isNaN(date.getTime()))) {
+            date = new Date(date);
+        }
+
         switch (unit) {
             case 'date':
                 //YYYY-MM-DD
@@ -345,6 +358,10 @@ class SimpleDate {
 
     public isSameOrBefore(date : Date, unit ?: unitIsBefore) {
         let response : boolean = false;
+
+        if(!(date instanceof Date && !isNaN(date.getTime()))) {
+            date = new Date(date);
+        }
         
         switch (unit) {
             case 'date':
@@ -377,6 +394,14 @@ class SimpleDate {
         return response;
     }
 
+    /**
+     * checks if the passed date into the constructor is between the passed (from, to) date. If you set equal to false (default is true) then it will ignore the first and last date (from, to)
+     * @param from Date
+     * @param to Date
+     * @param unit 'year' | 'date' | 'month' | 'time';
+     * @param equal boolean (default is true)
+     * @returns 
+     */
     public isBetween(from : Date, to : Date, unit ?: unitIsBetween, equal : boolean = true) {
         let response : boolean = undefined,
             firstDate = new Date(this.date),
@@ -478,6 +503,12 @@ class SimpleDate {
         return response
     }
 
+    /**
+     * add the value that you select via the unit
+     * @param value number
+     * @param type 'years' | 'year' | 'months' | 'month' | 'days' | 'day' | 'hours' | 'hour' | 'minutes' | 'minute' | 'seconds' | 'second' | 'milliseconds' | 'millisecond';
+     * @returns 
+     */
     public add(value : number, type : unitOperation) : SimpleDate {
         let newDate : SimpleDate = new SimpleDate(this.date)
 
@@ -521,6 +552,12 @@ class SimpleDate {
         return newDate;
     }
 
+    /**
+     * subtracts the value that you select via the unit
+     * @param value number
+     * @param type 'years' | 'year' | 'months' | 'month' | 'days' | 'day' | 'hours' | 'hour' | 'minutes' | 'minute' | 'seconds' | 'second' | 'milliseconds' | 'millisecond';
+     * @returns 
+     */
     public subtract(value : number, type : unitOperation) : SimpleDate {
         let newDate : SimpleDate = new SimpleDate(this.date)
 
@@ -577,12 +614,16 @@ class SimpleDate {
 
     /**
      * with this function you can adopt the data (wich you want) like ['hours', 'minutes', 'year' '...'] of the passed date into the first date
-     * @param from 
-     * @param values 
+     * @param from Date
+     * @param values 'year' | 'month' | 'date' | 'hours' | 'hour' | 'minutes' | 'minute' | 'seconds' | 'second' | 'milliseconds' | 'millisecond'
      * @returns 
      */
-    public adopt(from: Date, values ?: adoptUnit[]) : SimpleDate {
+    public adopt(from : Date, values ?: adoptUnit[]) : SimpleDate {
         const fromDate = new Date(from);
+
+        if(!(from instanceof Date && !isNaN(from.getTime()))) {
+            from = new Date(from);
+        }
 
         if(from) {
             if(values?.length) {
@@ -621,6 +662,22 @@ class SimpleDate {
         }
 
         return new SimpleDate(this.date);
+    }
+
+    /**
+     * you can check if the date that you passed in the constructor is in the dates array
+     * @param dates Array<Date>
+     * @param isWithinUnit 'year' | 'day' | 'month' | 'week' | 'date';
+     * @returns 
+     */
+    public isWithin(dates : Date[], isWithinUnit : isWithinUnit = 'date') {
+        let result = false;
+
+        if(dates.length) {
+            result = dates.some((date) => new SimpleDate(this.date).isSame(new Date(date), isWithinUnit));
+        }
+
+        return result;
     }
 }
 
