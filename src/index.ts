@@ -16,8 +16,8 @@ type adoptUnit = 'year' | 'month' | 'date' | 'hours' | 'hour' | 'minutes' | 'min
 type isWithinUnit = 'year' | 'day' | 'month' | 'week' | 'date';
 
 class SimpleDate {
-    private date : Date = undefined;
-    private settings : NSimpleDate.ISettings = {
+    public date : Date = undefined;
+    public settings : NSimpleDate.ISettings = {
         offset : 2
     }
 
@@ -112,11 +112,7 @@ class SimpleDate {
             break;
             
             case 'year':
-                newDate.setHours(0, 0, 0, 0);
-                newDate.setDate(1);
-                newDate.setMonth(0);
-
-                result = newDate;
+                result = new Date(newDate.getFullYear(), 0, 0, 0, 0, 0, 0);
             break;
 
             case 'month':
@@ -150,11 +146,12 @@ class SimpleDate {
             break;
             
             case 'year':
-                newDate.setHours(23, 59, 59, 999);
-                newDate.setDate(0);
-                newDate.setMonth(11);
+                // newDate.setHours(23, 59, 59, 999);
+                // newDate.setDate(0);
+                // newDate.setMonth(11);
             
-                result = newDate;
+                // result = newDate;
+                result = new Date(newDate.getFullYear(), 12, 0, 23, 59, 59);
             break;
 
             case 'month':

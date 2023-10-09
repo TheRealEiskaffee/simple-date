@@ -14,8 +14,8 @@ type unitOperation = 'years' | 'year' | 'months' | 'month' | 'days' | 'day' | 'h
 type adoptUnit = 'year' | 'month' | 'date' | 'hours' | 'hour' | 'minutes' | 'minute' | 'seconds' | 'second' | 'milliseconds' | 'millisecond';
 type isWithinUnit = 'year' | 'day' | 'month' | 'week' | 'date';
 declare class SimpleDate {
-    private date;
-    private settings;
+    date: Date;
+    settings: NSimpleDate.ISettings;
     constructor(date?: number | string | Date, strict?: boolean, settings?: NSimpleDate.ISettings);
     private padTo2Digits;
     diff(diffDate: Date, unitOfTime: diffUnit): number;
@@ -82,7 +82,7 @@ declare class SimpleDate {
      * shows you how much days has the date of the year
      * @returns number
      */
-    daysInYear(): 365 | 366;
+    daysInYear(): number;
     /**
      * shows you if the date that you hand over (in the constructor) is a leap year or not
      * @returns boolean
