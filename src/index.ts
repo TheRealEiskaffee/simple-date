@@ -666,7 +666,7 @@ class SimpleDate {
      * shows you how much days has the date of the year 
      * @returns number
      */
-    public daysInYear() {
+    public daysInYear() : number {
         return (this.date instanceof Date && !isNaN(this.date.getTime())) ? 
                     ((this.date.getFullYear() % 4 === 0 && this.date.getFullYear() % 100 > 0) || this.date.getFullYear() % 400 == 0) ?
                         366 : 
@@ -678,7 +678,7 @@ class SimpleDate {
      * shows you if the date that you hand over (in the constructor) is a leap year or not
      * @returns boolean
      */
-    public isLeapYear() {
+    public isLeapYear() : boolean {
         return (this.date instanceof Date && !isNaN(this.date.getTime())) ? 
                     ((this.date.getFullYear() % 4 === 0 && this.date.getFullYear() % 100 > 0) || this.date.getFullYear() % 400 == 0) ?
                         true : 
