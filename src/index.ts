@@ -468,8 +468,6 @@ class SimpleDate {
     public format(format ?: string) {
         let response : string = undefined,
             date = new Date(this.date);
-        
-        date.setHours(date.getHours() + (Math.abs(date.getTimezoneOffset()) / 60));
 
         if(format) {
             const year = date.toISOString().substring(0, 4), //YYYY
@@ -662,6 +660,30 @@ class SimpleDate {
         }
 
         return new SimpleDate(this.date);
+    }
+
+    /**
+     * shows you how much days has the date of the year 
+     * @returns number
+     */
+    public daysInYear() {
+        return (this.date instanceof Date && !isNaN(this.date.getTime())) ? 
+                    ((this.date.getFullYear() % 4 === 0 && this.date.getFullYear() % 100 > 0) || this.date.getFullYear() % 400 == 0) ?
+                        366 : 
+                        365 : 
+                    undefined;
+    }
+
+    /**
+     * shows you if the date that you hand over (in the constructor) is a leap year or not
+     * @returns boolean
+     */
+    public isLeapYear() {
+        return (this.date instanceof Date && !isNaN(this.date.getTime())) ? 
+                    ((this.date.getFullYear() % 4 === 0 && this.date.getFullYear() % 100 > 0) || this.date.getFullYear() % 400 == 0) ?
+                        true : 
+                        false : 
+                    undefined;
     }
 
     /**

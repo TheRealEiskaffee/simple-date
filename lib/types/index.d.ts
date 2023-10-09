@@ -79,6 +79,16 @@ declare class SimpleDate {
      */
     adopt(from: Date, values?: adoptUnit[]): SimpleDate;
     /**
+     * shows you how much days has the date of the year
+     * @returns number
+     */
+    daysInYear(): 365 | 366;
+    /**
+     * shows you if the date that you hand over (in the constructor) is a leap year or not
+     * @returns boolean
+     */
+    isLeapYear(): boolean;
+    /**
      * you can check if the date that you passed in the constructor is in the dates array
      * @param dates Array<Date>
      * @param isWithinUnit 'year' | 'day' | 'month' | 'week' | 'date';
