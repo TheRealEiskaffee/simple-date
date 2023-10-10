@@ -4,7 +4,7 @@ declare namespace NSimpleDate {
     }
 }
 
-type diffUnit = 'days' | 'day' | 'years' | 'year' | 'month' | 'months' | 'second' | 'seconds';
+type diffUnit = 'days' | 'day' | 'years' | 'year' | 'month' | 'months' | 'hour' | 'hours' | 'second' | 'seconds' | 'millisecond' | 'milliseconds';
 type unitStartOf = 'year' | 'day' | 'month' | 'week';
 type unitEndOf = 'year' | 'day' | 'month' | 'week';
 type unitIsSame = 'year' | 'day' | 'month' | 'week' | 'date';
@@ -56,6 +56,16 @@ class SimpleDate {
                 case 'seconds':
                 case 'second':
                     result = differenceInMilliseconds / 1000;
+                break;
+
+                case 'hour':
+                case 'hours':
+                    result = (differenceInMilliseconds / 1000) / 3600;
+                break;
+
+                case 'millisecond':
+                case 'milliseconds':
+                    result = differenceInMilliseconds
                 break;
             }
         }

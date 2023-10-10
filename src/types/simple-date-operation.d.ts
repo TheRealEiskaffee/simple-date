@@ -5,7 +5,7 @@ declare module 'simple-date-operation' {
         }
     }
     
-    type diffUnit = 'days' | 'day' | 'years' | 'year' | 'month' | 'months' | 'second' | 'seconds';
+    type diffUnit = 'days' | 'day' | 'years' | 'year' | 'month' | 'months' | 'hour' | 'hours' | 'second' | 'seconds' | 'millisecond' | 'milliseconds';
     type unitStartOf = 'year' | 'day' | 'month' | 'week';
     type unitEndOf = 'year' | 'day' | 'month' | 'week';
     type unitIsSame = 'year' | 'day' | 'month' | 'week' | 'date';
