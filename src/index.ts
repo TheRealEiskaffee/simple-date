@@ -122,7 +122,7 @@ class SimpleDate {
             break;
             
             case 'year':
-                result = new Date(newDate.getFullYear(), 0, 0, 0, 0, 0, 0);
+                result = new Date(newDate.getFullYear(), 0, 1);
             break;
 
             case 'month':
@@ -161,7 +161,7 @@ class SimpleDate {
                 // newDate.setMonth(11);
             
                 // result = newDate;
-                result = new Date(newDate.getFullYear(), 12, 0, 23, 59, 59);
+                result = new Date(newDate.getFullYear(), 12, 1);
             break;
 
             case 'month':
