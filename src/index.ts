@@ -207,7 +207,11 @@ class SimpleDate {
         let result = false;
         
         if(!(date instanceof Date && !isNaN(date.getTime()))) {
-            date = new Date(date);
+            if(date) {
+                date = new Date(date);
+            } else {
+                date = new Date()
+            }
         }
         
         if(!sameYear || this.date?.getFullYear() === date?.getFullYear()) {
@@ -251,7 +255,11 @@ class SimpleDate {
         let response : boolean = false;
 
         if(!(date instanceof Date && !isNaN(date.getTime()))) {
-            date = new Date(date);
+            if(date) {
+                date = new Date(date);
+            } else {
+                date = new Date()
+            }
         }
 
         switch (unit) {
@@ -289,7 +297,11 @@ class SimpleDate {
         let response : boolean = false;
         
         if(!(date instanceof Date && !isNaN(date.getTime()))) {
-            date = new Date(date);
+            if(date) {
+                date = new Date(date);
+            } else {
+                date = new Date()
+            }
         }
 
         if(date) {
@@ -329,7 +341,11 @@ class SimpleDate {
         let response : boolean = false;
         
         if(!(date instanceof Date && !isNaN(date.getTime()))) {
-            date = new Date(date);
+            if(date) {
+                date = new Date(date);
+            } else {
+                date = new Date()
+            }
         }
 
         switch (unit) {
@@ -367,7 +383,11 @@ class SimpleDate {
         let response : boolean = false;
 
         if(!(date instanceof Date && !isNaN(date.getTime()))) {
-            date = new Date(date);
+            if(date) {
+                date = new Date(date);
+            } else {
+                date = new Date()
+            }
         }
         
         switch (unit) {
