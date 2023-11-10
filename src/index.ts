@@ -22,10 +22,17 @@ type locales = 'ar_AE' | 'ar_BH' | 'ar_DJ' | 'ar_DZ' | 'ar_EG' | 'ar_EH' | 'ar_E
 class SimpleDate {
     public date : Date = undefined;
     public settings : NSimpleDate.ISettings = {
+        offset : undefined,
         locale : undefined,
         timeZone : undefined
     }
 
+    /**
+     * you can pass a Date as Object, milliseconds, timestamps and more like date. The strict is used for faulty dates, so you get an undefined and not the actual time date. The offset in the settings must be written as minutes
+     * @param date string or date
+     * @param strict boolean
+     * @param settings offset, locale, timeZone (object)
+     */
     constructor(date ?: number | string | Date, strict ?: boolean, settings ?: NSimpleDate.ISettings) {
         const resolvedTimeOptions = new Intl.DateTimeFormat().resolvedOptions();
 
