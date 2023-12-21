@@ -52,7 +52,7 @@ declare class SimpleDate {
     isBetween(from: Date, to: Date, unit?: unitIsBetween, equal?: boolean): boolean;
     /**
      * you can create your own format. This is the available formats in a string.
-     * YYYY (2023),
+     * YYYY (2023)
      * MM (05)
      * DD (15)
      * HH (23)

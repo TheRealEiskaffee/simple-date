@@ -212,7 +212,7 @@ class SimpleDate {
 
             startDate.setDate(startDate.getDate() + 1);
             
-            nextDate.setHours(23, 59, 59, 59);
+            nextDate.setHours(0, 0, 0, 0);
             
             result.push(nextDate);
         }
