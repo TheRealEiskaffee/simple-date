@@ -534,7 +534,7 @@ class SimpleDate {
 
         if(format) {
             response = format;
-
+            //first, the long regex and then the short regex
             if(new RegExp(/YYYY/).test(response)) {
                 response = response.replace(/YYYY/g, date.toISOString().substring(0, 4)); //YYYY (2023)
             }
