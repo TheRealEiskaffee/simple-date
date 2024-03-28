@@ -50,7 +50,7 @@ class SimpleDate {
     public diff(diffDate : Date, unitOfTime : diffUnit) : number {
         let result : number = undefined;
 
-        if(diffDate && unitOfTime) {
+        if(diffDate && unitOfTime && this.date) {
             const differenceInMilliseconds = Math.abs(new Date(diffDate).getTime() - this.date.getTime()),
                   millisecondsInDay = 1000 * 60 * 60 * 24;
                   
@@ -91,7 +91,7 @@ class SimpleDate {
     }
 
     public clone() : SimpleDate {
-        return new SimpleDate(this.date);
+        return this.date ? new SimpleDate(this.date) : undefined;
     }
 
     public isValid() : boolean {
@@ -100,7 +100,7 @@ class SimpleDate {
     }
 
     public getCalendarWeek() : number {
-        const recrusiveFunction : any = (date : Date) => {
+        const recrusiveFunction = (date : Date) : number => {
             // Kopiere das Datum, um die ursprüngliche Variable nicht zu ändern
             const copiedDate : Date = new Date(date.getTime());
             
@@ -120,42 +120,44 @@ class SimpleDate {
             return weekNumber;
         }
         
-        return recrusiveFunction(this.date);
+        return this.date ? recrusiveFunction(this.date) : undefined;
     }
 
     public getWeekNumber() : number {
-        return this.date.getDay() === 0 ? 6 : this.date.getDay() - 1 ;
+        return this.date ? this.date.getDay() === 0 ? 6 : this.date.getDay() - 1 : undefined;
     }
 
     public startOf(unitOf ?: unitStartOf) : Date {
         let result : Date = undefined,
             newDate : Date = new Date(this.date);
 
-        switch (unitOf) {
-            case 'day':
-                newDate.setHours(0, 0, 0, 0);
+        if(this.date) {
+            switch (unitOf) {
+                case 'day':
+                    newDate.setHours(0, 0, 0, 0);
+                    
+                    result = newDate;
+                break;
                 
-                result = newDate;
-            break;
-            
-            case 'year':
-                result = new Date(newDate.getFullYear(), 0, 1);
-            break;
-
-            case 'month':
-                newDate.setHours(0, 0, 0, 0);
-                newDate.setDate(1);
-
-                result = newDate
-            break;
-
-            case 'week':
-                let startDate = new Date(newDate.setDate(newDate.getDay() > 1 ? newDate.getDate() - (newDate.getDay()-1) : newDate.getDate()));
-
-                startDate.setHours(0, 0, 0, 0);
-
-                result = startDate;
-            break;
+                case 'year':
+                    result = new Date(newDate.getFullYear(), 0, 1);
+                break;
+    
+                case 'month':
+                    newDate.setHours(0, 0, 0, 0);
+                    newDate.setDate(1);
+    
+                    result = newDate
+                break;
+    
+                case 'week':
+                    let startDate = new Date(newDate.setDate(newDate.getDay() > 1 ? newDate.getDate() - (newDate.getDay()-1) : newDate.getDate()));
+    
+                    startDate.setHours(0, 0, 0, 0);
+    
+                    result = startDate;
+                break;
+            }
         }
 
         return result
@@ -165,56 +167,61 @@ class SimpleDate {
         let result : Date = undefined,
             newDate : Date = new Date(this.date);
 
-        switch (unitOf) {
-            case 'day':
-                newDate.setHours(23, 59, 59, 999);
-
-                result = newDate;
-            break;
-            
-            case 'year':
-                // newDate.setHours(23, 59, 59, 999);
-                // newDate.setDate(0);
-                // newDate.setMonth(11);
-            
-                // result = newDate;
-                result = new Date(newDate.getFullYear(), 12, 1);
-            break;
-
-            case 'month':
-                newDate.setHours(23, 59, 59, 999);
-                newDate.setDate(new Date(newDate.getFullYear(), newDate.getMonth() + 1, 0).getDate());
-
-                result = newDate;
-            break;
-
-            case 'week':
-                let endDate = new Date(newDate.setDate(newDate.getDay() < 7 ? newDate.getDate() + (7-newDate.getDay()) : newDate.getDate()));
-                endDate.setHours(23, 59, 59, 999);
-
-                result = endDate;
-            break;
+        if(this.date) {
+            switch (unitOf) {
+                case 'day':
+                    newDate.setHours(23, 59, 59, 999);
+    
+                    result = newDate;
+                break;
+                
+                case 'year':
+                    // newDate.setHours(23, 59, 59, 999);
+                    // newDate.setDate(0);
+                    // newDate.setMonth(11);
+                
+                    // result = newDate;
+                    result = new Date(newDate.getFullYear(), 12, 1);
+                break;
+    
+                case 'month':
+                    newDate.setHours(23, 59, 59, 999);
+                    newDate.setDate(new Date(newDate.getFullYear(), newDate.getMonth() + 1, 0).getDate());
+    
+                    result = newDate;
+                break;
+    
+                case 'week':
+                    let endDate = new Date(newDate.setDate(newDate.getDay() < 7 ? newDate.getDate() + (7-newDate.getDay()) : newDate.getDate()));
+                    endDate.setHours(23, 59, 59, 999);
+    
+                    result = endDate;
+                break;
+            }
         }
 
         return result
     }
 
     public getDates(toDate : Date) : Date[] {
-        const result : Date[] = [],
-              firstDate : Date = new Date(new SimpleDate(this.date).startOf('day')),
-              lastDate : Date = new Date(new SimpleDate(toDate).endOf('day')),
-              diffDays = Math.abs(Math.round((new Date(lastDate).getTime() - firstDate.getTime()) / (1000 * 60 * 60 * 24))),
-              days = new SimpleDate(firstDate).isSame(lastDate, 'date') ? 1 : diffDays >= 2 ? diffDays : 2,
-              startDate = firstDate <= lastDate ? new Date(firstDate) : new Date(lastDate);
-              
-        for (let index = 0; index < days; index++) {
-            const nextDate = new Date(startDate);
+        const result : Date[] = [];
 
-            startDate.setDate(startDate.getDate() + 1);
+        if(this.date) {
+            const firstDate : Date = new Date(new SimpleDate(this.date).startOf('day')),
+                  lastDate : Date = new Date(new SimpleDate(toDate).endOf('day')),
+                  diffDays = Math.abs(Math.round((new Date(lastDate).getTime() - firstDate.getTime()) / (1000 * 60 * 60 * 24))),
+                  days = new SimpleDate(firstDate).isSame(lastDate, 'date') ? 1 : diffDays >= 2 ? diffDays : 2,
+                  startDate = firstDate <= lastDate ? new Date(firstDate) : new Date(lastDate);
             
-            nextDate.setHours(0, 0, 0, 0);
-            
-            result.push(nextDate);
+            for (let index = 0; index < days; index++) {
+                const nextDate = new Date(startDate);
+
+                startDate.setDate(startDate.getDate() + 1);
+                
+                nextDate.setHours(0, 0, 0, 0);
+                
+                result.push(nextDate);
+            }
         }
 
         return result;
@@ -223,47 +230,49 @@ class SimpleDate {
     public isSame(date : Date, unitIsSame : unitIsSame, sameYear : boolean = true) : boolean {
         let result = false;
         
-        if(!(date instanceof Date && !isNaN(date.getTime()))) {
-            if(date) {
-                date = new Date(date);
-            } else {
-                date = new Date()
+        if(this.date) {
+            if(!(date instanceof Date && !isNaN(date.getTime()))) {
+                if(date) {
+                    date = new Date(date);
+                } else {
+                    date = new Date()
+                }
             }
-        }
-        
-        if(!sameYear || this.date?.getFullYear() === date?.getFullYear()) {
-            switch (unitIsSame) {
-                case 'day':
-                    result = this.date.getDate() === date.getDate();
-                break;
-
-                case 'month':
-                    result = this.date.getMonth() === date.getMonth()
-                break;
-
-                case 'year':
-                    result = this.date?.getFullYear() === date?.getFullYear();
-                break;
-
-                case 'week':
-                    if(this.date.getMonth() === date.getMonth()) {
-                        let weekday1 = this.date.getUTCDay(),
-                            weekday2 = date.getUTCDay(),
-                            millisecondsInWeek = 7 * 24 * 60 * 60 * 1000,
-                            millisecondsInDay = 24 * 60 * 60 * 1000,
-                            daysToMonday1 = (weekday1 + 6) % 7 + 1,
-                            daysToMonday2 = (weekday2 + 6) % 7 + 1,
-                            weekNumber1 = Math.floor((this.date.getTime() - daysToMonday1 * millisecondsInDay) / millisecondsInWeek),
-                            weekNumber2 = Math.floor((date.getTime() - daysToMonday2 * millisecondsInDay) / millisecondsInWeek);
-                        
-                        result = weekNumber1 === weekNumber2;
-                    }
-                break;
-                case 'date':
-                default:
-                    result = `${ (this.padTo2Digits(date.getMonth() + 1)) }-${ this.padTo2Digits(date.getDate()) }` === `${ (this.padTo2Digits(this.date.getMonth() + 1)) }-${ this.padTo2Digits(this.date.getDate()) }`
-                break;
-            }          
+            
+            if(!sameYear || this.date?.getFullYear() === date?.getFullYear()) {
+                switch (unitIsSame) {
+                    case 'day':
+                        result = this.date.getDate() === date.getDate();
+                    break;
+    
+                    case 'month':
+                        result = this.date.getMonth() === date.getMonth()
+                    break;
+    
+                    case 'year':
+                        result = this.date?.getFullYear() === date?.getFullYear();
+                    break;
+    
+                    case 'week':
+                        if(this.date.getMonth() === date.getMonth()) {
+                            let weekday1 = this.date.getUTCDay(),
+                                weekday2 = date.getUTCDay(),
+                                millisecondsInWeek = 7 * 24 * 60 * 60 * 1000,
+                                millisecondsInDay = 24 * 60 * 60 * 1000,
+                                daysToMonday1 = (weekday1 + 6) % 7 + 1,
+                                daysToMonday2 = (weekday2 + 6) % 7 + 1,
+                                weekNumber1 = Math.floor((this.date.getTime() - daysToMonday1 * millisecondsInDay) / millisecondsInWeek),
+                                weekNumber2 = Math.floor((date.getTime() - daysToMonday2 * millisecondsInDay) / millisecondsInWeek);
+                            
+                            result = weekNumber1 === weekNumber2;
+                        }
+                    break;
+                    case 'date':
+                    default:
+                        result = `${ (this.padTo2Digits(date.getMonth() + 1)) }-${ this.padTo2Digits(date.getDate()) }` === `${ (this.padTo2Digits(this.date.getMonth() + 1)) }-${ this.padTo2Digits(this.date.getDate()) }`
+                    break;
+                }          
+            }
         }
 
         return result;
@@ -272,42 +281,44 @@ class SimpleDate {
     public isAfter(date : Date, unit ?: unitIsAfter) {
         let response : boolean = false;
 
-        if(!(date instanceof Date && !isNaN(date.getTime()))) {
-            if(date) {
-                date = new Date(date);
-            } else {
-                date = new Date()
+        if(this.date) {
+            if(!(date instanceof Date && !isNaN(date.getTime()))) {
+                if(date) {
+                    date = new Date(date);
+                } else {
+                    date = new Date()
+                }
             }
-        }
-
-        const fromYear = this.date.getFullYear(),
-                  fromMonth = this.padTo2Digits(this.date.getMonth() + 1),
-                  fromDate = this.padTo2Digits(this.date.getDate()),
-                  toYear = date.getFullYear(),
-                  toMonth = this.padTo2Digits(date.getMonth() + 1),
-                  toDate = this.padTo2Digits(date.getDate());
-
-        switch (unit) {
-            case 'date':
-                //YYYY-MM-DD
-                response = new Date(`${fromYear}-${fromMonth}-${fromDate}`) > new Date(`${toYear}-${toMonth}-${toDate}`)
-                break;
-            case 'month':
-                //YYYY-MM
-                response = new Date(`${fromYear}-${fromMonth}`) > new Date(`${toYear}-${toMonth}`)
-                break;
-            case 'year':
-                //YYYY
-                response = fromYear > toYear
-                break;
-            case 'time':
-                //HH:mm:ss
-                response = this.date.toISOString().substring(11, 19) > date.toISOString().substring(11, 19);
-                break;
-            default:
-                //YYYY-MM-DD HH:mm:ss
-                response = this.date > date;
-                break;
+    
+            const fromYear = this.date.getFullYear(),
+                      fromMonth = this.padTo2Digits(this.date.getMonth() + 1),
+                      fromDate = this.padTo2Digits(this.date.getDate()),
+                      toYear = date.getFullYear(),
+                      toMonth = this.padTo2Digits(date.getMonth() + 1),
+                      toDate = this.padTo2Digits(date.getDate());
+    
+            switch (unit) {
+                case 'date':
+                    //YYYY-MM-DD
+                    response = new Date(`${fromYear}-${fromMonth}-${fromDate}`) > new Date(`${toYear}-${toMonth}-${toDate}`)
+                    break;
+                case 'month':
+                    //YYYY-MM
+                    response = new Date(`${fromYear}-${fromMonth}`) > new Date(`${toYear}-${toMonth}`)
+                    break;
+                case 'year':
+                    //YYYY
+                    response = fromYear > toYear
+                    break;
+                case 'time':
+                    //HH:mm:ss
+                    response = this.date.toISOString().substring(11, 19) > date.toISOString().substring(11, 19);
+                    break;
+                default:
+                    //YYYY-MM-DD HH:mm:ss
+                    response = this.date > date;
+                    break;
+            }
         }
 
         return response;
@@ -316,43 +327,45 @@ class SimpleDate {
     public isSameOrAfter(date : Date, unit ?: unitIsAfter) {
         let response : boolean = false;
         
-        if(!(date instanceof Date && !isNaN(date.getTime()))) {
-            if(date) {
-                date = new Date(date);
-            } else {
-                date = new Date()
+        if(this.date) {
+            if(!(date instanceof Date && !isNaN(date.getTime()))) {
+                if(date) {
+                    date = new Date(date);
+                } else {
+                    date = new Date()
+                }
             }
-        }
-
-        if(date) {
-            const fromYear = this.date.getFullYear(),
-                  fromMonth = this.padTo2Digits(this.date.getMonth() + 1),
-                  fromDate = this.padTo2Digits(this.date.getDate()),
-                  toYear = date.getFullYear(),
-                  toMonth = this.padTo2Digits(date.getMonth() + 1),
-                  toDate = this.padTo2Digits(date.getDate());
-
-            switch (unit) {
-                case 'date':
-                    //YYYY-MM-DD
-                    response = new Date(`${fromYear}-${fromMonth}-${fromDate}`) >= new Date(`${toYear}-${toMonth}-${toDate}`)
-                    break;
-                case 'month':
-                    //YYYY-MM
-                    response = new Date(`${fromYear}-${fromMonth}`) >= new Date(`${toYear}-${toMonth}`)
-                    break;
-                case 'year':
-                    //YYYY
-                    response = fromYear >= toYear
-                    break;
-                case 'time':
-                    //HH:mm:ss
-                    response = this.date.toISOString().substring(11, 19) >= date.toISOString().substring(11, 19);
-                    break;
-                default:
-                    //YYYY-MM-DD HH:mm:ss
-                    response = this.date >= date;
-                    break;
+    
+            if(date) {
+                const fromYear = this.date.getFullYear(),
+                      fromMonth = this.padTo2Digits(this.date.getMonth() + 1),
+                      fromDate = this.padTo2Digits(this.date.getDate()),
+                      toYear = date.getFullYear(),
+                      toMonth = this.padTo2Digits(date.getMonth() + 1),
+                      toDate = this.padTo2Digits(date.getDate());
+    
+                switch (unit) {
+                    case 'date':
+                        //YYYY-MM-DD
+                        response = new Date(`${fromYear}-${fromMonth}-${fromDate}`) >= new Date(`${toYear}-${toMonth}-${toDate}`)
+                        break;
+                    case 'month':
+                        //YYYY-MM
+                        response = new Date(`${fromYear}-${fromMonth}`) >= new Date(`${toYear}-${toMonth}`)
+                        break;
+                    case 'year':
+                        //YYYY
+                        response = fromYear >= toYear
+                        break;
+                    case 'time':
+                        //HH:mm:ss
+                        response = this.date.toISOString().substring(11, 19) >= date.toISOString().substring(11, 19);
+                        break;
+                    default:
+                        //YYYY-MM-DD HH:mm:ss
+                        response = this.date >= date;
+                        break;
+                }
             }
         }
 
@@ -362,7 +375,7 @@ class SimpleDate {
     public isBefore(date : Date, unit ?: unitIsBefore) {
         let response : boolean = false;
         
-        if(date) {
+        if(date && this.date) {
             if(!(date instanceof Date && !isNaN(date.getTime()))) {
                 if(date) {
                     date = new Date(date);
@@ -408,42 +421,44 @@ class SimpleDate {
     public isSameOrBefore(date : Date, unit ?: unitIsBefore) {
         let response : boolean = false;
 
-        if(!(date instanceof Date && !isNaN(date.getTime()))) {
-            if(date) {
-                date = new Date(date);
-            } else {
-                date = new Date()
+        if(this.date) {
+            if(!(date instanceof Date && !isNaN(date.getTime()))) {
+                if(date) {
+                    date = new Date(date);
+                } else {
+                    date = new Date()
+                }
             }
-        }
-        
-        const fromYear = this.date.getFullYear(),
-                  fromMonth = this.padTo2Digits(this.date.getMonth() + 1),
-                  fromDate = this.padTo2Digits(this.date.getDate()),
-                  toYear = date.getFullYear(),
-                  toMonth = this.padTo2Digits(date.getMonth() + 1),
-                  toDate = this.padTo2Digits(date.getDate());
-
-        switch (unit) {
-            case 'date':
-                //YYYY-MM-DD
-                response = new Date(`${fromYear}-${fromMonth}-${fromDate}`) <= new Date(`${toYear}-${toMonth}-${toDate}`)
-                break;
-            case 'month':
-                //YYYY-MM
-                response = new Date(`${fromYear}-${fromMonth}`) <= new Date(`${toYear}-${toMonth}`)
-                break;
-            case 'year':
-                //YYYY
-                response = fromYear <= toYear
-                break;
-            case 'time':
-                //HH:mm:ss
-                response = this.date.toISOString().substring(11, 19) <= date.toISOString().substring(11, 19);
-                break;
-            default:
-                //YYYY-MM-DD HH:mm:ss
-                response = this.date <= date;
-                break;
+            
+            const fromYear = this.date.getFullYear(),
+                      fromMonth = this.padTo2Digits(this.date.getMonth() + 1),
+                      fromDate = this.padTo2Digits(this.date.getDate()),
+                      toYear = date.getFullYear(),
+                      toMonth = this.padTo2Digits(date.getMonth() + 1),
+                      toDate = this.padTo2Digits(date.getDate());
+    
+            switch (unit) {
+                case 'date':
+                    //YYYY-MM-DD
+                    response = new Date(`${fromYear}-${fromMonth}-${fromDate}`) <= new Date(`${toYear}-${toMonth}-${toDate}`)
+                    break;
+                case 'month':
+                    //YYYY-MM
+                    response = new Date(`${fromYear}-${fromMonth}`) <= new Date(`${toYear}-${toMonth}`)
+                    break;
+                case 'year':
+                    //YYYY
+                    response = fromYear <= toYear
+                    break;
+                case 'time':
+                    //HH:mm:ss
+                    response = this.date.toISOString().substring(11, 19) <= date.toISOString().substring(11, 19);
+                    break;
+                default:
+                    //YYYY-MM-DD HH:mm:ss
+                    response = this.date <= date;
+                    break;
+            }
         }
 
         return response;
@@ -462,44 +477,46 @@ class SimpleDate {
             firstDate = new Date(this.date),
             secondDate = new Date(from),
             thirdDate = new Date(to);
-        
-        switch (unit) {
-            case 'date':
-                firstDate.setHours(0, 0, 0, 0);
-                secondDate.setHours(0, 0, 0, 0);
-                thirdDate.setHours(0, 0, 0, 0);
 
-                if(equal) {
-                    response = firstDate >= secondDate && firstDate <= thirdDate;
-                } else {
-                    response = firstDate > secondDate && firstDate < thirdDate;
-                }
-            break;
-
-            case 'month':
-                if(equal) {
-                    response = firstDate.getMonth() + 1 >= secondDate.getMonth() + 1 && firstDate.getMonth() + 1 <= thirdDate.getMonth() + 1;
-                } else {
-                    response = firstDate.getMonth() + 1 > secondDate.getMonth() + 1 && firstDate.getMonth() + 1 < thirdDate.getMonth() + 1;
-                }
-            break;
-
-            case 'year':
-                if(equal) {
-                    response = firstDate.getFullYear() >= secondDate.getFullYear() && firstDate.getFullYear() <= thirdDate.getFullYear();
-                } else {
-                    response = firstDate.getFullYear() > secondDate.getFullYear() && firstDate.getFullYear() < thirdDate.getFullYear();
-                }
-            break;
-
-            case 'time':
-            default:
-                if(equal) {
-                    response = firstDate >= secondDate && firstDate <= thirdDate;
-                } else {
-                    response = firstDate > secondDate && firstDate < thirdDate;
-                }
-            break;
+        if(this.date) {
+            switch (unit) {
+                case 'date':
+                    firstDate.setHours(0, 0, 0, 0);
+                    secondDate.setHours(0, 0, 0, 0);
+                    thirdDate.setHours(0, 0, 0, 0);
+    
+                    if(equal) {
+                        response = firstDate >= secondDate && firstDate <= thirdDate;
+                    } else {
+                        response = firstDate > secondDate && firstDate < thirdDate;
+                    }
+                break;
+    
+                case 'month':
+                    if(equal) {
+                        response = firstDate.getMonth() + 1 >= secondDate.getMonth() + 1 && firstDate.getMonth() + 1 <= thirdDate.getMonth() + 1;
+                    } else {
+                        response = firstDate.getMonth() + 1 > secondDate.getMonth() + 1 && firstDate.getMonth() + 1 < thirdDate.getMonth() + 1;
+                    }
+                break;
+    
+                case 'year':
+                    if(equal) {
+                        response = firstDate.getFullYear() >= secondDate.getFullYear() && firstDate.getFullYear() <= thirdDate.getFullYear();
+                    } else {
+                        response = firstDate.getFullYear() > secondDate.getFullYear() && firstDate.getFullYear() < thirdDate.getFullYear();
+                    }
+                break;
+    
+                case 'time':
+                default:
+                    if(equal) {
+                        response = firstDate >= secondDate && firstDate <= thirdDate;
+                    } else {
+                        response = firstDate > secondDate && firstDate < thirdDate;
+                    }
+                break;
+            }
         }
         
         return response
@@ -524,59 +541,61 @@ class SimpleDate {
         let response : string = undefined,
             date = new Date(this.date);
 
-        if(this.settings.offset !== undefined) {
-            if(Math.sign(this.settings.offset) <= 0) {
-                date.setMinutes(date.getMinutes() + Math.abs(this.settings.offset))
+        if(this.date) {
+            if(this.settings.offset !== undefined) {
+                if(Math.sign(this.settings.offset) <= 0) {
+                    date.setMinutes(date.getMinutes() + Math.abs(this.settings.offset))
+                } else {
+                    date.setMinutes(date.getMinutes() - Math.abs(this.settings.offset))
+                }
+            }
+    
+            if(format) {
+                response = format;
+                //first, the long regex and then the short regex
+                if(new RegExp(/YYYY/).test(response)) {
+                    response = response.replace(/YYYY/g, date.toISOString().substring(0, 4)); //YYYY (2023)
+                }
+    
+                if(new RegExp(/dddd/).test(response)) {
+                    response = response.replace(/dddd/g, date.toLocaleString(this.settings.locale, { weekday: 'long', timeZone: this.settings.timeZone })); //dddd (Saturday)
+                }
+    
+                if(new RegExp(/MMMM/).test(response)) {
+                    response = response.replace(/MMMM/g, date.toLocaleString(this.settings.locale, { month: 'long', timeZone: this.settings.timeZone })); //MMMM (January)
+                }
+    
+                if(new RegExp(/MMM/).test(response)) {
+                    response = response.replace(/MMM/g, date.toLocaleString(this.settings.locale, { month: 'short', timeZone: this.settings.timeZone })); //MMM (Jan)
+                }
+                
+                if(new RegExp(/MM/).test(response)) {
+                    response = response.replace(/MM/g, date.toISOString().substring(5, 7)); //MM (05)
+                }
+    
+                if(new RegExp(/dd/).test(response)) {
+                    response = response.replace(/dd/g, date.toLocaleString(this.settings.locale, { weekday: 'short', timeZone: this.settings.timeZone })); //dd (Sa)
+                }
+    
+                if(new RegExp(/DD/).test(response)) {
+                    response = response.replace(/DD/g, date.toISOString().substring(8, 10)); //DD (15)
+                }
+                
+                if(new RegExp(/HH/).test(response)) {
+                    response = response.replace(/HH/g, date.toISOString().substring(11, 13)); //HH (23)
+                }
+    
+                if(new RegExp(/mm/).test(response)) {
+                    response = response.replace(/mm/g, date.toISOString().substring(14, 16)); //mm (14)
+                }
+    
+                if(new RegExp(/ss/).test(response)) {
+                    response = response.replace(/ss/g, date.toISOString().substring(17, 19)); //ss (42)
+                }
             } else {
-                date.setMinutes(date.getMinutes() - Math.abs(this.settings.offset))
-            }
-        }
-
-        if(format) {
-            response = format;
-            //first, the long regex and then the short regex
-            if(new RegExp(/YYYY/).test(response)) {
-                response = response.replace(/YYYY/g, date.toISOString().substring(0, 4)); //YYYY (2023)
-            }
-
-            if(new RegExp(/dddd/).test(response)) {
-                response = response.replace(/dddd/g, date.toLocaleString(this.settings.locale, { weekday: 'long', timeZone: this.settings.timeZone })); //dddd (Saturday)
-            }
-
-            if(new RegExp(/MMMM/).test(response)) {
-                response = response.replace(/MMMM/g, date.toLocaleString(this.settings.locale, { month: 'long', timeZone: this.settings.timeZone })); //MMMM (January)
-            }
-
-            if(new RegExp(/MMM/).test(response)) {
-                response = response.replace(/MMM/g, date.toLocaleString(this.settings.locale, { month: 'short', timeZone: this.settings.timeZone })); //MMM (Jan)
-            }
-            
-            if(new RegExp(/MM/).test(response)) {
-                response = response.replace(/MM/g, date.toISOString().substring(5, 7)); //MM (05)
-            }
-
-            if(new RegExp(/dd/).test(response)) {
-                response = response.replace(/dd/g, date.toLocaleString(this.settings.locale, { weekday: 'short', timeZone: this.settings.timeZone })); //dd (Sa)
-            }
-
-            if(new RegExp(/DD/).test(response)) {
-                response = response.replace(/DD/g, date.toISOString().substring(8, 10)); //DD (15)
-            }
-            
-            if(new RegExp(/HH/).test(response)) {
-                response = response.replace(/HH/g, date.toISOString().substring(11, 13)); //HH (23)
-            }
-
-            if(new RegExp(/mm/).test(response)) {
-                response = response.replace(/mm/g, date.toISOString().substring(14, 16)); //mm (14)
-            }
-
-            if(new RegExp(/ss/).test(response)) {
-                response = response.replace(/ss/g, date.toISOString().substring(17, 19)); //ss (42)
-            }
-        } else {
-            if(this.date instanceof Date && !isNaN(this.date.getTime())) {
-                response = date.toISOString().substring(0, 10);
+                if(this.date instanceof Date && !isNaN(this.date.getTime())) {
+                    response = date.toISOString().substring(0, 10);
+                }
             }
         }
         
@@ -584,23 +603,23 @@ class SimpleDate {
     }
 
     public year() {
-        return new Date(this.date).getFullYear();
+        return this.date ? new Date(this.date).getFullYear() : undefined;
     }
 
     public month() {
-        return new Date(this.date).toISOString().substring(5, 7);
+        return this.date ? new Date(this.date).toISOString().substring(5, 7) : undefined;
     }
 
     public day() {
-        return new Date(this.date).toISOString().substring(8, 10);
+        return this.date ? new Date(this.date).toISOString().substring(8, 10) : undefined;
     }
 
     public shortMonth() {
-        return new Date(this.date).toLocaleString(this.settings.locale, { month: 'short', timeZone: this.settings.timeZone });
+        return this.date ? new Date(this.date).toLocaleString(this.settings.locale, { month: 'short', timeZone: this.settings.timeZone }) : undefined;
     }
 
     public longMonth() {
-        return new Date(this.date).toLocaleString(this.settings.locale, { month: 'long', timeZone: this.settings.timeZone });
+        return this.date ? new Date(this.date).toLocaleString(this.settings.locale, { month: 'long', timeZone: this.settings.timeZone }) : undefined;
     }
 
     /**
@@ -612,41 +631,43 @@ class SimpleDate {
     public add(value : number, type : unitOperation) : SimpleDate {
         let newDate : SimpleDate = new SimpleDate(this.date)
 
-        switch (type) {
-            case 'years':
-            case 'year':
-                newDate.date.setFullYear(newDate.date.getFullYear() + value);
-            break;
-
-            case 'months':
-            case 'month':
-                newDate.date.setMonth(newDate.date.getMonth() + value);
-            break;
-
-            case 'days':
-            case 'day':
-                newDate.date.setDate(newDate.date.getDate() + value);
-            break;
-
-            case 'hours':
-            case 'hour':
-                newDate.date.setHours(newDate.date.getHours() + value);
-            break;
-
-            case 'minutes':
-            case 'minute':
-                newDate.date.setMinutes(newDate.date.getMinutes() + value);
-            break;
-
-            case 'seconds':
-            case 'second':
-                newDate.date.setSeconds(newDate.date.getSeconds() + value);
-            break;
-
-            case 'milliseconds':
-            case 'millisecond':
-                newDate.date.setMilliseconds(newDate.date.getMilliseconds() + value);
-            break;
+        if(this.date) {
+            switch (type) {
+                case 'years':
+                case 'year':
+                    newDate.date.setFullYear(newDate.date.getFullYear() + value);
+                break;
+    
+                case 'months':
+                case 'month':
+                    newDate.date.setMonth(newDate.date.getMonth() + value);
+                break;
+    
+                case 'days':
+                case 'day':
+                    newDate.date.setDate(newDate.date.getDate() + value);
+                break;
+    
+                case 'hours':
+                case 'hour':
+                    newDate.date.setHours(newDate.date.getHours() + value);
+                break;
+    
+                case 'minutes':
+                case 'minute':
+                    newDate.date.setMinutes(newDate.date.getMinutes() + value);
+                break;
+    
+                case 'seconds':
+                case 'second':
+                    newDate.date.setSeconds(newDate.date.getSeconds() + value);
+                break;
+    
+                case 'milliseconds':
+                case 'millisecond':
+                    newDate.date.setMilliseconds(newDate.date.getMilliseconds() + value);
+                break;
+            }
         }
 
         return newDate;
@@ -661,41 +682,43 @@ class SimpleDate {
     public subtract(value : number, type : unitOperation) : SimpleDate {
         let newDate : SimpleDate = new SimpleDate(this.date)
 
-        switch (type) {
-            case 'years':
-            case 'year':
-                newDate.date.setFullYear(newDate.date.getFullYear() - value);
-            break;
-
-            case 'months':
-            case 'month':
-                newDate.date.setMonth(newDate.date.getMonth() - value);
-            break;
-
-            case 'days':
-            case 'day':
-                newDate.date.setDate(newDate.date.getDate() - value);
-            break;
-
-            case 'hours':
-            case 'hour':
-                newDate.date.setHours(newDate.date.getHours() - value);
-            break;
-
-            case 'minutes':
-            case 'minute':
-                newDate.date.setMinutes(newDate.date.getMinutes() - value);
-            break;
-
-            case 'seconds':
-            case 'second':
-                newDate.date.setSeconds(newDate.date.getSeconds() - value);
-            break;
-
-            case 'milliseconds':
-            case 'millisecond':
-                newDate.date.setMilliseconds(newDate.date.getMilliseconds() - value);
-            break;
+        if(this.date) {
+            switch (type) {
+                case 'years':
+                case 'year':
+                    newDate.date.setFullYear(newDate.date.getFullYear() - value);
+                break;
+    
+                case 'months':
+                case 'month':
+                    newDate.date.setMonth(newDate.date.getMonth() - value);
+                break;
+    
+                case 'days':
+                case 'day':
+                    newDate.date.setDate(newDate.date.getDate() - value);
+                break;
+    
+                case 'hours':
+                case 'hour':
+                    newDate.date.setHours(newDate.date.getHours() - value);
+                break;
+    
+                case 'minutes':
+                case 'minute':
+                    newDate.date.setMinutes(newDate.date.getMinutes() - value);
+                break;
+    
+                case 'seconds':
+                case 'second':
+                    newDate.date.setSeconds(newDate.date.getSeconds() - value);
+                break;
+    
+                case 'milliseconds':
+                case 'millisecond':
+                    newDate.date.setMilliseconds(newDate.date.getMilliseconds() - value);
+                break;
+            }
         }
 
         return newDate;
@@ -705,7 +728,7 @@ class SimpleDate {
         let clonedDate = new Date(this.date),
             result : string = undefined;
 
-        if(clonedDate) {
+        if(clonedDate && this.date) {
             result = `${clonedDate.getMinutes()} ${clonedDate.getHours()} ${clonedDate.getDate()} ${clonedDate.getMonth() + 1} ${clonedDate.getDay()}`
         }
 
@@ -721,47 +744,49 @@ class SimpleDate {
     public adopt(from : Date, values ?: adoptUnit[]) : SimpleDate {
         const fromDate = new Date(from);
 
-        if(!(from instanceof Date && !isNaN(from.getTime()))) {
-            from = new Date(from);
-        }
-
-        if(from) {
-            if(values?.length) {
-                values.forEach((value) => {
-                    switch (value) {
-                        case 'year':
-                            this.date.setFullYear(fromDate.getFullYear());
-                            break;
-                        case 'month':
-                            this.date.setMonth(fromDate.getMonth());
-                            break;
-                        case 'date':
-                            this.date.setDate(fromDate.getDate());
-                            break;
-                        case 'hours':
-                        case 'hour':
-                            this.date.setHours(fromDate.getHours());
-                            break;
-                        case 'minutes':
-                        case 'minute':
-                            
-                            this.date.setMinutes(fromDate.getMinutes());
-                            break;
-                        case 'seconds':
-                        case 'second':
-                            this.date.setSeconds(fromDate.getSeconds());
-                            
-                            break;
-                        case 'milliseconds':
-                        case 'millisecond':
-                            this.date.setMilliseconds(fromDate.getMilliseconds());
-                            break;
-                    }
-                });
+        if(this.date) {
+            if(!(from instanceof Date && !isNaN(from.getTime()))) {
+                from = new Date(from);
+            }
+    
+            if(from) {
+                if(values?.length) {
+                    values.forEach((value) => {
+                        switch (value) {
+                            case 'year':
+                                this.date.setFullYear(fromDate.getFullYear());
+                                break;
+                            case 'month':
+                                this.date.setMonth(fromDate.getMonth());
+                                break;
+                            case 'date':
+                                this.date.setDate(fromDate.getDate());
+                                break;
+                            case 'hours':
+                            case 'hour':
+                                this.date.setHours(fromDate.getHours());
+                                break;
+                            case 'minutes':
+                            case 'minute':
+                                
+                                this.date.setMinutes(fromDate.getMinutes());
+                                break;
+                            case 'seconds':
+                            case 'second':
+                                this.date.setSeconds(fromDate.getSeconds());
+                                
+                                break;
+                            case 'milliseconds':
+                            case 'millisecond':
+                                this.date.setMilliseconds(fromDate.getMilliseconds());
+                                break;
+                        }
+                    });
+                }
             }
         }
 
-        return new SimpleDate(this.date);
+        return new SimpleDate(this.date, true);
     }
 
     /**
@@ -797,7 +822,7 @@ class SimpleDate {
     public isWithin(dates : Date[], isWithinUnit : isWithinUnit = 'date') {
         let result = false;
 
-        if(dates.length) {
+        if(dates.length && this.date) {
             result = dates.some((date) => new SimpleDate(this.date).isSame(new Date(date), isWithinUnit));
         }
 
