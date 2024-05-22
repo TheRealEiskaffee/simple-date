@@ -635,15 +635,45 @@ class SimpleDate {
     }
 
     public year() {
-        return this.date ? new Date(this.date).getFullYear() : undefined;
+        let date = new Date(this.date);
+        
+        if(this.settings.offset !== undefined) {
+            if(Math.sign(this.settings.offset) <= 0) {
+                date.setMinutes(date.getMinutes() + Math.abs(this.settings.offset))
+            } else {
+                date.setMinutes(date.getMinutes() - Math.abs(this.settings.offset))
+            }
+        }
+
+        return this.date ? new Date(date).getFullYear() : undefined;
     }
 
     public month() {
-        return this.date ? new Date(this.date).toISOString().substring(5, 7) : undefined;
+        let date = new Date(this.date);
+        
+        if(this.settings.offset !== undefined) {
+            if(Math.sign(this.settings.offset) <= 0) {
+                date.setMinutes(date.getMinutes() + Math.abs(this.settings.offset))
+            } else {
+                date.setMinutes(date.getMinutes() - Math.abs(this.settings.offset))
+            }
+        }
+
+        return this.date ? new Date(date).toISOString().substring(5, 7) : undefined;
     }
 
     public day() {
-        return this.date ? new Date(this.date).toISOString().substring(8, 10) : undefined;
+        let date = new Date(this.date);
+        
+        if(this.settings.offset !== undefined) {
+            if(Math.sign(this.settings.offset) <= 0) {
+                date.setMinutes(date.getMinutes() + Math.abs(this.settings.offset))
+            } else {
+                date.setMinutes(date.getMinutes() - Math.abs(this.settings.offset))
+            }
+        }
+
+        return this.date ? new Date(date).toISOString().substring(8, 10) : undefined;
     }
 
     public shortMonth() {
