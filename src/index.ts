@@ -6,7 +6,7 @@ declare namespace NSimpleDate {
     }
 }
 
-type diffUnit = 'days' | 'day' | 'years' | 'year' | 'month' | 'months' | 'hour' | 'hours' | 'second' | 'seconds' | 'millisecond' | 'milliseconds';
+type diffUnit = 'days' | 'day' | 'years' | 'year' | 'month' | 'months' | 'week' | 'weeks' | 'hour' | 'hours' | 'second' | 'seconds' | 'millisecond' | 'milliseconds';
 type unitStartOf = 'year' | 'day' | 'month' | 'week';
 type unitEndOf = 'year' | 'day' | 'month' | 'week';
 type unitIsSame = 'year' | 'day' | 'month' | 'week' | 'date';
@@ -70,6 +70,11 @@ class SimpleDate {
                     result = differenceInMilliseconds / (millisecondsInDay * 30);
                 break;
 
+                case 'weeks':
+                case 'week':
+                    result = Math.trunc((differenceInMilliseconds / (millisecondsInDay * 7)) * 100) / 100;
+                break;
+
                 case 'seconds':
                 case 'second':
                     result = differenceInMilliseconds / 1000;
@@ -99,7 +104,7 @@ class SimpleDate {
         return this.date instanceof Date && !isNaN(this.date.getTime());
     }
 
-    public getCalendarWeek() : number {
+    public isoWeek() : number {
         const recrusiveFunction = (date : Date) : number => {
             // Kopiere das Datum, um die ursprüngliche Variable nicht zu ändern
             const copiedDate : Date = new Date(date.getTime());
@@ -123,8 +128,33 @@ class SimpleDate {
         return this.date ? recrusiveFunction(this.date) : undefined;
     }
 
+    
     public getWeekNumber() : number {
-        return this.date ? this.date.getDay() === 0 ? 6 : this.date.getDay() - 1 : undefined;
+        const date = new Date(this.date);
+        
+        if(this.settings.offset !== undefined) {
+            if(Math.sign(this.settings.offset) <= 0) {
+                date.setMinutes(date.getMinutes() + Math.abs(this.settings.offset))
+            } else {
+                date.setMinutes(date.getMinutes() - Math.abs(this.settings.offset))
+            }
+        }
+
+        return date ? date.getDay() === 0 ? 6 : date.getDay() - 1 : undefined;
+    }
+
+    public isoWeekDay() : number {
+        const date = new Date(this.date);
+        
+        if(this.settings.offset !== undefined) {
+            if(Math.sign(this.settings.offset) <= 0) {
+                date.setMinutes(date.getMinutes() + Math.abs(this.settings.offset))
+            } else {
+                date.setMinutes(date.getMinutes() - Math.abs(this.settings.offset))
+            }
+        }
+
+        return date ? date.getDay() === 0 ? 6 : date.getDay() : undefined;
     }
 
     public startOf(unitOf ?: unitStartOf) : Date {
@@ -539,7 +569,8 @@ class SimpleDate {
                         response = firstDate.getFullYear() > secondDate.getFullYear() && firstDate.getFullYear() < thirdDate.getFullYear();
                     }
                 break;
-    
+                    
+                //TODO FIX BUG if the date is different
                 case 'time':
                 default:
                     if(equal) {

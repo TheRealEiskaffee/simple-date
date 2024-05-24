@@ -5,7 +5,7 @@ declare namespace NSimpleDate {
         timeZone?: timeZones;
     }
 }
-type diffUnit = 'days' | 'day' | 'years' | 'year' | 'month' | 'months' | 'hour' | 'hours' | 'second' | 'seconds' | 'millisecond' | 'milliseconds';
+type diffUnit = 'days' | 'day' | 'years' | 'year' | 'month' | 'months' | 'week' | 'weeks' | 'hour' | 'hours' | 'second' | 'seconds' | 'millisecond' | 'milliseconds';
 type unitStartOf = 'year' | 'day' | 'month' | 'week';
 type unitEndOf = 'year' | 'day' | 'month' | 'week';
 type unitIsSame = 'year' | 'day' | 'month' | 'week' | 'date';
@@ -31,8 +31,9 @@ declare class SimpleDate {
     diff(diffDate: Date, unitOfTime: diffUnit): number;
     clone(): SimpleDate;
     isValid(): boolean;
-    getCalendarWeek(): number;
+    isoWeek(): number;
     getWeekNumber(): number;
+    isoWeekDay(): number;
     startOf(unitOf?: unitStartOf): Date;
     endOf(unitOf?: unitEndOf): Date;
     getDates(toDate: Date): Date[];
