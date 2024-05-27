@@ -154,7 +154,7 @@ class SimpleDate {
             }
         }
 
-        return date ? date.getDay() === 0 ? 6 : date.getDay() : undefined;
+        return date ? date.getDay() : undefined;
     }
 
     public startOf(unitOf ?: unitStartOf) : Date {
