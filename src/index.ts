@@ -931,6 +931,22 @@ class SimpleDate {
 
         return result;
     }
+
+    /**
+     * you can specific
+     * @param dates Array<Date>
+     * @param isWithinUnit 'year' | 'day' | 'month' | 'week' | 'date';
+     * @returns 
+     */
+    // public set(dates : Date[], isWithinUnit : isWithinUnit = 'date') {
+    //     let result = false;
+
+    //     if(dates.length && this.date) {
+    //         result = dates.some((date) => new SimpleDate(this.date).isSame(new Date(date), isWithinUnit));
+    //     }
+
+    //     return result;
+    // }
 }
 
 export = SimpleDate
