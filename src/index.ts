@@ -157,80 +157,70 @@ class SimpleDate {
         return date ? date.getDay() : undefined;
     }
 
-    public startOf(unitOf ?: unitStartOf) : Date {
-        let result : Date = undefined,
-            newDate : Date = new Date(this.date);
+    public startOf(unitOf?: unitStartOf): Date {
+        if (!this.isValid()) return undefined;
+        const newDate = new Date(this.date);
 
-        if(this.date) {
-            switch (unitOf) {
-                case 'day':
-                    newDate.setHours(0, 0, 0, 0);
-                    
-                    result = newDate;
-                break;
-                
-                case 'year':
-                    result = new Date(newDate.getFullYear(), 0, 1);
-                break;
-    
-                case 'month':
-                    newDate.setHours(0, 0, 0, 0);
-                    newDate.setDate(1);
-    
-                    result = newDate
-                break;
-    
-                case 'week':
-                    let startDate = new Date(newDate.setDate(newDate.getDay() > 1 ? newDate.getDate() - (newDate.getDay()-1) : newDate.getDate()));
-    
-                    startDate.setHours(0, 0, 0, 0);
-    
-                    result = startDate;
-                break;
+        switch (unitOf) {
+            case 'day':
+                newDate.setHours(0, 0, 0, 0);
+                return newDate;
+
+            case 'week': {
+                // ISO-Week: Woche startet am Montag (1)
+                // JS getDay(): 0=So, 1=Mo, ..., 6=Sa
+                const day = newDate.getDay() || 7; // Sonntag (0) → 7
+                newDate.setHours(0, 0, 0, 0);
+                newDate.setDate(newDate.getDate() - (day - 1));
+                return newDate;
             }
-        }
 
-        return result
+            case 'month':
+                newDate.setHours(0, 0, 0, 0);
+                newDate.setDate(1);
+                return newDate;
+
+            case 'year':
+                newDate.setHours(0, 0, 0, 0);
+                newDate.setMonth(0, 1); // Januar, 1. Tag
+                return newDate;
+
+            default:
+                return undefined;
+        }
     }
 
-    public endOf(unitOf ?: unitEndOf) : Date {
-        let result : Date = undefined,
-            newDate : Date = new Date(this.date);
+    public endOf(unitOf?: unitEndOf): Date {
+        if (!this.isValid()) return undefined;
+        const newDate = new Date(this.date);
 
-        if(this.date) {
-            switch (unitOf) {
-                case 'day':
-                    newDate.setHours(23, 59, 59, 999);
-    
-                    result = newDate;
-                break;
-                
-                case 'year':
-                    // newDate.setHours(23, 59, 59, 999);
-                    // newDate.setDate(0);
-                    // newDate.setMonth(11);
-                
-                    // result = newDate;
-                    result = new Date(newDate.getFullYear(), 12, 1);
-                break;
-    
-                case 'month':
-                    newDate.setHours(23, 59, 59, 999);
-                    newDate.setDate(new Date(newDate.getFullYear(), newDate.getMonth() + 1, 0).getDate());
-    
-                    result = newDate;
-                break;
-    
-                case 'week':
-                    let endDate = new Date(newDate.setDate(newDate.getDay() < 7 ? newDate.getDate() + (7-newDate.getDay()) : newDate.getDate()));
-                    endDate.setHours(23, 59, 59, 999);
-    
-                    result = endDate;
-                break;
+        switch (unitOf) {
+            case 'day':
+                newDate.setHours(23, 59, 59, 999);
+                return newDate;
+
+            case 'week': {
+                // ISO-Week: Woche endet am Sonntag (7)
+                const day = newDate.getDay() || 7; // Sonntag (0) → 7
+                newDate.setHours(23, 59, 59, 999);
+                newDate.setDate(newDate.getDate() + (7 - day));
+                return newDate;
             }
-        }
 
-        return result
+            case 'month':
+                newDate.setHours(23, 59, 59, 999);
+                // Zum letzten Tag des Monats gehen
+                newDate.setMonth(newDate.getMonth() + 1, 0);
+                return newDate;
+
+            case 'year':
+                newDate.setHours(23, 59, 59, 999);
+                newDate.setMonth(11, 31); // Dezember, 31.
+                return newDate;
+
+            default:
+                return undefined;
+        }
     }
 
     public getDates(toDate : Date) : Date[] {
