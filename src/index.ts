@@ -563,6 +563,10 @@ class SimpleDate {
                 //TODO FIX BUG if the date is different
                 case 'time':
                 default:
+                    firstDate.setMilliseconds(0);
+                    secondDate.setMilliseconds(0);
+                    thirdDate.setMilliseconds(0);
+                    
                     if(equal) {
                         response = firstDate >= secondDate && firstDate <= thirdDate;
                     } else {
