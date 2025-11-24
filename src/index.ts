@@ -6,7 +6,7 @@ declare namespace NSimpleDate {
     }
 }
 
-type diffUnit = 'days' | 'day' | 'years' | 'year' | 'month' | 'months' | 'week' | 'weeks' | 'hour' | 'hours' | 'second' | 'seconds' | 'millisecond' | 'milliseconds';
+type diffUnit = 'days' | 'day' | 'years' | 'year' | 'month' | 'months' | 'week' | 'weeks' | 'hour' | 'hours' | 'minute' | 'minutes' | 'second' | 'seconds' | 'millisecond' | 'milliseconds';
 type unitStartOf = 'year' | 'day' | 'month' | 'week';
 type unitEndOf = 'year' | 'day' | 'month' | 'week';
 type unitIsSame = 'year' | 'day' | 'month' | 'week' | 'date';
@@ -43,17 +43,23 @@ class SimpleDate {
         }
     }
 
+    /** Pads a number to two digits with a leading zero. */
     private padTo2Digits(number : number) {
         return number?.toString()?.padStart(2, '0');
     }
 
+    /**
+     * Calculates the absolute difference to another date in the requested unit.
+     * @param diffDate Date to compare against.
+     * @param unitOfTime Unit to return the difference in.
+     */
     public diff(diffDate : Date, unitOfTime : diffUnit) : number {
         let result : number = undefined;
 
         if(diffDate && unitOfTime && this.date) {
             const differenceInMilliseconds = Math.abs(new Date(diffDate).getTime() - this.date.getTime()),
                   millisecondsInDay = 1000 * 60 * 60 * 24;
-                  
+            
             switch (unitOfTime) {
                 case 'days':
                 case 'day':
@@ -73,6 +79,11 @@ class SimpleDate {
                 case 'weeks':
                 case 'week':
                     result = Math.trunc((differenceInMilliseconds / (millisecondsInDay * 7)) * 100) / 100;
+                break;
+
+                case 'minutes':
+                case 'minute':
+                    result = differenceInMilliseconds / (1000 * 60);
                 break;
 
                 case 'seconds':
@@ -95,17 +106,23 @@ class SimpleDate {
         return result
     }
 
+    /** Returns a new SimpleDate pointing to the same moment. */
     public clone() : SimpleDate {
         return this.date ? new SimpleDate(this.date) : undefined;
     }
 
+    /** Validates that the internal value is a real Date instance. */
     public isValid() : boolean {
         // return Object.prototype.toString.call(this.date) === '[object Date]';
         return this.date instanceof Date && !isNaN(this.date.getTime());
     }
 
+    /**
+     * Determines the ISO-8601 week number for the current date.
+     * @returns Week number (1-53) or undefined if date is invalid.
+     */
     public isoWeek() : number {
-        const recrusiveFunction = (date : Date) : number => {
+        const recursiveFunction = (date : Date) : number => {
             // Kopiere das Datum, um die ursprüngliche Variable nicht zu ändern
             const copiedDate : Date = new Date(date.getTime());
             
@@ -116,7 +133,7 @@ class SimpleDate {
             // Stelle sicher, dass das Jahr mindestens vier Tage hat, um in die aktuelle Kalenderwoche zu fallen
             const yearStart = new Date(copiedDate.getFullYear(), 0, 1);
             if (copiedDate < yearStart) {
-                return recrusiveFunction(yearStart);
+                return recursiveFunction(yearStart);
             }
             
             // Berechne die Kalenderwoche 86400000 (Millisekunden pro Tag)
@@ -125,10 +142,14 @@ class SimpleDate {
             return weekNumber;
         }
         
-        return this.date ? recrusiveFunction(this.date) : undefined;
+        return this.date ? recursiveFunction(this.date) : undefined;
     }
 
     
+    /**
+     * Returns the weekday index starting Monday as 0 (respecting offset).
+     * @returns 0-6 (Mon-Sun) or undefined.
+     */
     public getWeekNumber() : number {
         const date = new Date(this.date);
         
@@ -143,6 +164,10 @@ class SimpleDate {
         return date ? date.getDay() === 0 ? 6 : date.getDay() - 1 : undefined;
     }
 
+    /**
+     * Returns the weekday using JS convention (0 Sunday - 6 Saturday) respecting offset.
+     * @returns 0-6 or undefined.
+     */
     public isoWeekDay() : number {
         const date = new Date(this.date);
         
@@ -157,6 +182,10 @@ class SimpleDate {
         return date ? date.getDay() : undefined;
     }
 
+    /**
+     * Returns a new Date set to the start of the given unit.
+     * @param unitOf Unit granularity: day, week, month, year.
+     */
     public startOf(unitOf?: unitStartOf): Date {
         if (!this.isValid()) return undefined;
         const newDate = new Date(this.date);
@@ -190,6 +219,10 @@ class SimpleDate {
         }
     }
 
+    /**
+     * Returns a new Date set to the end of the given unit.
+     * @param unitOf Unit granularity: day, week, month, year.
+     */
     public endOf(unitOf?: unitEndOf): Date {
         if (!this.isValid()) return undefined;
         const newDate = new Date(this.date);
@@ -223,6 +256,10 @@ class SimpleDate {
         }
     }
 
+    /**
+     * Builds an array of dates between the current date and a target date (inclusive).
+     * @param toDate End date for the range.
+     */
     public getDates(toDate : Date) : Date[] {
         const result : Date[] = [];
 
@@ -247,6 +284,12 @@ class SimpleDate {
         return result;
     }
 
+    /**
+     * Compares equality with another date at a given unit.
+     * @param date Date to compare against.
+     * @param unitIsSame Unit granularity for comparison.
+     * @param sameYear Require the same year when comparing day/month/date/week.
+     */
     public isSame(date : Date, unitIsSame : unitIsSame, sameYear : boolean = true) : boolean {
         let result = false;
         
@@ -659,6 +702,7 @@ class SimpleDate {
         return response
     }
 
+    /** Returns the year, respecting the configured offset. */
     public year() {
         let date = new Date(this.date);
         
@@ -673,6 +717,7 @@ class SimpleDate {
         return this.date ? new Date(date).getFullYear() : undefined;
     }
 
+    /** Returns the month (01-12), respecting the configured offset. */
     public month() {
         let date = new Date(this.date);
         
@@ -687,6 +732,7 @@ class SimpleDate {
         return this.date ? new Date(date).toISOString().substring(5, 7) : undefined;
     }
 
+    /** Returns the day of month (01-31), respecting the configured offset. */
     public day() {
         let date = new Date(this.date);
         
@@ -701,10 +747,12 @@ class SimpleDate {
         return this.date ? new Date(date).toISOString().substring(8, 10) : undefined;
     }
 
+    /** Localized short month name (e.g., Jan). */
     public shortMonth() {
         return this.date ? new Date(this.date).toLocaleString(this.settings.locale, { month: 'short', timeZone: this.settings.timeZone }) : undefined;
     }
 
+    /** Localized long month name (e.g., January). */
     public longMonth() {
         return this.date ? new Date(this.date).toLocaleString(this.settings.locale, { month: 'long', timeZone: this.settings.timeZone }) : undefined;
     }
@@ -821,6 +869,7 @@ class SimpleDate {
         return newDate;
     }
 
+    /** Generates a 5-part cron expression: minute hour day month weekday. */
     public cronExpression() {
         let clonedDate = new Date(this.date),
             result : string = undefined;
