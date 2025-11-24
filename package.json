@@ -1,6 +1,6 @@
 {
   "name": "simple-date-operation",
-  "version": "1.1.43",
+  "version": "1.1.45",
   "description": "This is a simple native date operation/convert tool.",
   "main": "lib/index.js",
   "types": "lib/types/index.d.ts",
