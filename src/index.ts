@@ -38,7 +38,7 @@ class SimpleDate {
         this.date = date ? new Date(date) : !strict ? new Date() : undefined;
 
         this.settings = {
-            offset : settings?.offset ? settings?.offset : this.date?.getTimezoneOffset() || 0,
+            offset : settings?.offset !== undefined ? settings?.offset : this.date?.getTimezoneOffset() || 0,
             locale : settings?.locale ? settings?.locale : 'default' as locales,
             timeZone : settings?.timeZone ? settings?.timeZone : undefined as timeZones,
         }
@@ -653,29 +653,35 @@ class SimpleDate {
     
             if(format) {
                 response = format;
+
+                // Reference dates for localized names (avoid double timezone conversion)
+                const isoString = date.toISOString(),
+                      month = new Date(Date.UTC(2000, parseInt(isoString.substring(5, 7), 10) - 1, 15)),
+                      weekday = new Date(Date.UTC(2000, 0, 2 + new Date(isoString).getUTCDay()));
+
                 //first, the long regex and then the short regex
                 if(new RegExp(/YYYY/).test(response)) {
-                    response = response.replace(/YYYY/g, date.toISOString().substring(0, 4)); //YYYY (2023)
+                    response = response.replace(/YYYY/g, isoString.substring(0, 4)); //YYYY (2023)
                 }
-    
+
                 if(new RegExp(/dddd/).test(response)) {
-                    response = response.replace(/dddd/g, date.toLocaleString(this.settings.locale, { weekday: 'long', timeZone: this.settings.timeZone })); //dddd (Saturday)
+                    response = response.replace(/dddd/g, weekday.toLocaleString(this.settings.locale, { weekday: 'long', timeZone: 'UTC' })); //dddd (Saturday)
                 }
-    
+
                 if(new RegExp(/MMMM/).test(response)) {
-                    response = response.replace(/MMMM/g, date.toLocaleString(this.settings.locale, { month: 'long', timeZone: this.settings.timeZone })); //MMMM (January)
+                    response = response.replace(/MMMM/g, month.toLocaleString(this.settings.locale, { month: 'long', timeZone: 'UTC' })); //MMMM (January)
                 }
-    
+
                 if(new RegExp(/MMM/).test(response)) {
-                    response = response.replace(/MMM/g, date.toLocaleString(this.settings.locale, { month: 'short', timeZone: this.settings.timeZone })); //MMM (Jan)
+                    response = response.replace(/MMM/g, month.toLocaleString(this.settings.locale, { month: 'short', timeZone: 'UTC' })); //MMM (Jan)
                 }
-                
+
                 if(new RegExp(/MM/).test(response)) {
-                    response = response.replace(/MM/g, date.toISOString().substring(5, 7)); //MM (05)
+                    response = response.replace(/MM/g, isoString.substring(5, 7)); //MM (05)
                 }
-    
+
                 if(new RegExp(/dd/).test(response)) {
-                    response = response.replace(/dd/g, date.toLocaleString(this.settings.locale, { weekday: 'short', timeZone: this.settings.timeZone })); //dd (Sa)
+                    response = response.replace(/dd/g, weekday.toLocaleString(this.settings.locale, { weekday: 'short', timeZone: 'UTC' })); //dd (Sa)
                 }
     
                 if(new RegExp(/DD/).test(response)) {
