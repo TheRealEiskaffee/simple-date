@@ -346,9 +346,10 @@ class SimpleDate {
      * Checks if one date is after another date, based on the specified unit of comparison.
      * @param date The date to compare against.
      * @param unit (Optional) The unit of comparison: 'date' (YYYY-MM-DD), 'month' (YYYY-MM), 'year' (YYYY), 'time'times (HH:mm:ss), or undefined for full date and time comparison.
+     * @param tolerance (Optional) Tolerance in milliseconds (default: 0). Shifts the target date forward, so this.date must be after date + tolerance.
      * @returns true if the current date is after the specified date, false otherwise.
      */
-    public isAfter(date : Date, unit ?: unitIsAfter) {
+    public isAfter(date : Date, unit ?: unitIsAfter, tolerance : number = 0) {
         let response : boolean = false;
 
         if(this.date) {
@@ -359,14 +360,16 @@ class SimpleDate {
                     date = new Date()
                 }
             }
-    
+
+            date = new Date(date.getTime() + tolerance);
+
             const fromYear = this.date.getFullYear(),
                       fromMonth = this.padTo2Digits(this.date.getMonth() + 1),
                       fromDate = this.padTo2Digits(this.date.getDate()),
                       toYear = date.getFullYear(),
                       toMonth = this.padTo2Digits(date.getMonth() + 1),
                       toDate = this.padTo2Digits(date.getDate());
-    
+
             switch (unit) {
                 case 'date':
                     //YYYY-MM-DD
@@ -452,11 +455,12 @@ class SimpleDate {
      * Checks if the current date is before the specified date, based on the specified unit of comparison.
      * @param date The date to compare against.
      * @param unit (Optional) The unit of comparison: 'date' (YYYY-MM-DD), 'month' (YYYY-MM), 'year' (YYYY), 'time'times (HH:mm:ss), or undefined for full date and time comparison.
+     * @param tolerance (Optional) Tolerance in milliseconds (default: 0). Shifts the target date backward, so this.date must be before date - tolerance.
      * @returns true if the current date is before the specified date, false otherwise.
      */
-    public isBefore(date : Date, unit ?: unitIsBefore) {
+    public isBefore(date : Date, unit ?: unitIsBefore, tolerance : number = 0) {
         let response : boolean = false;
-        
+
         if(date && this.date) {
             if(!(date instanceof Date && !isNaN(date.getTime()))) {
                 if(date) {
@@ -465,6 +469,8 @@ class SimpleDate {
                     date = new Date()
                 }
             }
+
+            date = new Date(date.getTime() - tolerance);
 
             const fromYear = this.date.getFullYear(),
                   fromMonth = this.padTo2Digits(this.date.getMonth() + 1),

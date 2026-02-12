@@ -89,9 +89,10 @@ declare class SimpleDate {
      * Checks if one date is after another date, based on the specified unit of comparison.
      * @param date The date to compare against.
      * @param unit (Optional) The unit of comparison: 'date' (YYYY-MM-DD), 'month' (YYYY-MM), 'year' (YYYY), 'time'times (HH:mm:ss), or undefined for full date and time comparison.
+     * @param tolerance (Optional) Tolerance in milliseconds (default: 0). Shifts the target date forward, so this.date must be after date + tolerance.
      * @returns true if the current date is after the specified date, false otherwise.
      */
-    isAfter(date: Date, unit?: unitIsAfter): boolean;
+    isAfter(date: Date, unit?: unitIsAfter, tolerance?: number): boolean;
     /**
      * Checks if the current date is the same as or after the specified date, based on the specified unit of comparison.
      * @param date The date to compare against.
@@ -103,9 +104,10 @@ declare class SimpleDate {
      * Checks if the current date is before the specified date, based on the specified unit of comparison.
      * @param date The date to compare against.
      * @param unit (Optional) The unit of comparison: 'date' (YYYY-MM-DD), 'month' (YYYY-MM), 'year' (YYYY), 'time'times (HH:mm:ss), or undefined for full date and time comparison.
+     * @param tolerance (Optional) Tolerance in milliseconds (default: 0). Shifts the target date backward, so this.date must be before date - tolerance.
      * @returns true if the current date is before the specified date, false otherwise.
      */
-    isBefore(date: Date, unit?: unitIsBefore): boolean;
+    isBefore(date: Date, unit?: unitIsBefore, tolerance?: number): boolean;
     /**
      * Checks if the current date is the same as or before the specified date, based on the specified unit of comparison.
      * @param date The date to compare against.
