@@ -83,38 +83,43 @@ declare class SimpleDate {
      * @param date Date to compare against.
      * @param unitIsSame Unit granularity for comparison.
      * @param sameYear Require the same year when comparing day/month/date/week.
+     * @param strict (Optional) When true, returns false if the date argument is not provided. Defaults to false.
      */
-    isSame(date: Date, unitIsSame: unitIsSame, sameYear?: boolean): boolean;
+    isSame(date: Date, unitIsSame: unitIsSame, sameYear?: boolean, strict?: boolean): boolean;
     /**
      * Checks if one date is after another date, based on the specified unit of comparison.
      * @param date The date to compare against.
      * @param unit (Optional) The unit of comparison: 'date' (YYYY-MM-DD), 'month' (YYYY-MM), 'year' (YYYY), 'time'times (HH:mm:ss), or undefined for full date and time comparison.
      * @param tolerance (Optional) Tolerance in milliseconds (default: 0). Shifts the target date forward, so this.date must be after date + tolerance.
+     * @param strict (Optional) When true, returns false if the date argument is not provided. Defaults to false.
      * @returns true if the current date is after the specified date, false otherwise.
      */
-    isAfter(date: Date, unit?: unitIsAfter, tolerance?: number): boolean;
+    isAfter(date: Date, unit?: unitIsAfter, tolerance?: number, strict?: boolean): boolean;
     /**
      * Checks if the current date is the same as or after the specified date, based on the specified unit of comparison.
      * @param date The date to compare against.
      * @param unit (Optional) The unit of comparison: 'date' (YYYY-MM-DD), 'month' (YYYY-MM), 'year' (YYYY), 'time'times (HH:mm:ss), or undefined for full date and time comparison.
+     * @param strict (Optional) When true, returns false if the date argument is not provided. Defaults to false.
      * @returns true if the current date is the same as or after the specified date, false otherwise.
      */
-    isSameOrAfter(date: Date, unit?: unitIsAfter): boolean;
+    isSameOrAfter(date: Date, unit?: unitIsAfter, strict?: boolean): boolean;
     /**
      * Checks if the current date is before the specified date, based on the specified unit of comparison.
      * @param date The date to compare against.
      * @param unit (Optional) The unit of comparison: 'date' (YYYY-MM-DD), 'month' (YYYY-MM), 'year' (YYYY), 'time'times (HH:mm:ss), or undefined for full date and time comparison.
      * @param tolerance (Optional) Tolerance in milliseconds (default: 0). Shifts the target date backward, so this.date must be before date - tolerance.
+     * @param strict (Optional) When true, returns false if the date argument is not provided. Defaults to false.
      * @returns true if the current date is before the specified date, false otherwise.
      */
-    isBefore(date: Date, unit?: unitIsBefore, tolerance?: number): boolean;
+    isBefore(date: Date, unit?: unitIsBefore, tolerance?: number, strict?: boolean): boolean;
     /**
      * Checks if the current date is the same as or before the specified date, based on the specified unit of comparison.
      * @param date The date to compare against.
      * @param unit (Optional) The unit of comparison: 'date' (YYYY-MM-DD), 'month' (YYYY-MM), 'year' (YYYY), 'time'times (HH:mm:ss), or undefined for full date and time comparison.
+     * @param strict (Optional) When true, returns false if the date argument is not provided. Defaults to false.
      * @returns true if the current date is the same as or before the specified date, false otherwise.
      */
-    isSameOrBefore(date: Date, unit?: unitIsBefore): boolean;
+    isSameOrBefore(date: Date, unit?: unitIsBefore, strict?: boolean): boolean;
     /**
      * checks if the passed date into the constructor is between the passed (from, to) date. If you set equal to false (default is true) then it will ignore the first and last date (from, to)
      * @param from Date
@@ -129,9 +134,10 @@ declare class SimpleDate {
      * @param to The end date.
      * @param unit (Optional) The unit of comparison: 'date' (YYYY-MM-DD), 'month' (YYYY-MM), 'year' (YYYY), 'time'times (HH:mm:ss), or undefined for full date and time comparison.
      * @param equal (Optional) Specifies whether the comparison includes equality with the start and end dates.
+     * @param strict (Optional) When true, returns false if either the from or to argument is not provided. Defaults to false.
      * @returns true if the current date is between the start and end dates, false otherwise.
      */
-    isBetween(from: Date, to: Date, unit?: unitIsBetween, equal?: boolean): boolean;
+    isBetween(from: Date, to: Date, unit?: unitIsBetween, equal?: boolean, strict?: boolean): boolean;
     /**
      * you can create your own format. This is the available formats in a string.
      * YYYY (2023)

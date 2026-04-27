@@ -290,14 +290,17 @@ class SimpleDate {
      * @param date Date to compare against.
      * @param unitIsSame Unit granularity for comparison.
      * @param sameYear Require the same year when comparing day/month/date/week.
+     * @param strict (Optional) When true, returns false if the date argument is not provided. Defaults to false.
      */
-    public isSame(date : Date, unitIsSame : unitIsSame, sameYear : boolean = true) : boolean {
+    public isSame(date : Date, unitIsSame : unitIsSame, sameYear : boolean = true, strict : boolean = false) : boolean {
         let result = false;
-        
+
         if(this.date) {
             if(!(date instanceof Date && !isNaN(date.getTime()))) {
                 if(date) {
                     date = new Date(date);
+                } else if(strict) {
+                    return false;
                 } else {
                     date = new Date()
                 }
@@ -347,15 +350,18 @@ class SimpleDate {
      * @param date The date to compare against.
      * @param unit (Optional) The unit of comparison: 'date' (YYYY-MM-DD), 'month' (YYYY-MM), 'year' (YYYY), 'time'times (HH:mm:ss), or undefined for full date and time comparison.
      * @param tolerance (Optional) Tolerance in milliseconds (default: 0). Shifts the target date forward, so this.date must be after date + tolerance.
+     * @param strict (Optional) When true, returns false if the date argument is not provided. Defaults to false.
      * @returns true if the current date is after the specified date, false otherwise.
      */
-    public isAfter(date : Date, unit ?: unitIsAfter, tolerance : number = 0) {
+    public isAfter(date : Date, unit ?: unitIsAfter, tolerance : number = 0, strict : boolean = false) {
         let response : boolean = false;
 
         if(this.date) {
             if(!(date instanceof Date && !isNaN(date.getTime()))) {
                 if(date) {
                     date = new Date(date);
+                } else if(strict) {
+                    return false;
                 } else {
                     date = new Date()
                 }
@@ -401,15 +407,18 @@ class SimpleDate {
      * Checks if the current date is the same as or after the specified date, based on the specified unit of comparison.
      * @param date The date to compare against.
      * @param unit (Optional) The unit of comparison: 'date' (YYYY-MM-DD), 'month' (YYYY-MM), 'year' (YYYY), 'time'times (HH:mm:ss), or undefined for full date and time comparison.
+     * @param strict (Optional) When true, returns false if the date argument is not provided. Defaults to false.
      * @returns true if the current date is the same as or after the specified date, false otherwise.
      */
-    public isSameOrAfter(date : Date, unit ?: unitIsAfter) {
+    public isSameOrAfter(date : Date, unit ?: unitIsAfter, strict : boolean = false) {
         let response : boolean = false;
-        
+
         if(this.date) {
             if(!(date instanceof Date && !isNaN(date.getTime()))) {
                 if(date) {
                     date = new Date(date);
+                } else if(strict) {
+                    return false;
                 } else {
                     date = new Date()
                 }
@@ -456,18 +465,19 @@ class SimpleDate {
      * @param date The date to compare against.
      * @param unit (Optional) The unit of comparison: 'date' (YYYY-MM-DD), 'month' (YYYY-MM), 'year' (YYYY), 'time'times (HH:mm:ss), or undefined for full date and time comparison.
      * @param tolerance (Optional) Tolerance in milliseconds (default: 0). Shifts the target date backward, so this.date must be before date - tolerance.
+     * @param strict (Optional) When true, returns false if the date argument is not provided. Defaults to false.
      * @returns true if the current date is before the specified date, false otherwise.
      */
-    public isBefore(date : Date, unit ?: unitIsBefore, tolerance : number = 0) {
+    public isBefore(date : Date, unit ?: unitIsBefore, tolerance : number = 0, strict : boolean = false) {
         let response : boolean = false;
+
+        if(strict && !date) {
+            return false;
+        }
 
         if(date && this.date) {
             if(!(date instanceof Date && !isNaN(date.getTime()))) {
-                if(date) {
-                    date = new Date(date);
-                } else {
-                    date = new Date()
-                }
+                date = new Date(date);
             }
 
             date = new Date(date.getTime() - tolerance);
@@ -510,15 +520,18 @@ class SimpleDate {
      * Checks if the current date is the same as or before the specified date, based on the specified unit of comparison.
      * @param date The date to compare against.
      * @param unit (Optional) The unit of comparison: 'date' (YYYY-MM-DD), 'month' (YYYY-MM), 'year' (YYYY), 'time'times (HH:mm:ss), or undefined for full date and time comparison.
+     * @param strict (Optional) When true, returns false if the date argument is not provided. Defaults to false.
      * @returns true if the current date is the same as or before the specified date, false otherwise.
      */
-    public isSameOrBefore(date : Date, unit ?: unitIsBefore) {
+    public isSameOrBefore(date : Date, unit ?: unitIsBefore, strict : boolean = false) {
         let response : boolean = false;
 
         if(this.date) {
             if(!(date instanceof Date && !isNaN(date.getTime()))) {
                 if(date) {
                     date = new Date(date);
+                } else if(strict) {
+                    return false;
                 } else {
                     date = new Date()
                 }
@@ -572,9 +585,14 @@ class SimpleDate {
      * @param to The end date.
      * @param unit (Optional) The unit of comparison: 'date' (YYYY-MM-DD), 'month' (YYYY-MM), 'year' (YYYY), 'time'times (HH:mm:ss), or undefined for full date and time comparison.
      * @param equal (Optional) Specifies whether the comparison includes equality with the start and end dates.
+     * @param strict (Optional) When true, returns false if either the from or to argument is not provided. Defaults to false.
      * @returns true if the current date is between the start and end dates, false otherwise.
      */
-    public isBetween(from : Date, to : Date, unit ?: unitIsBetween, equal : boolean = true) {
+    public isBetween(from : Date, to : Date, unit ?: unitIsBetween, equal : boolean = true, strict : boolean = false) {
+        if(strict && (!from || !to)) {
+            return false;
+        }
+
         let response : boolean = undefined,
             firstDate = new Date(this.date),
             secondDate = new Date(from),
